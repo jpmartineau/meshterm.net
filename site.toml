@@ -18,6 +18,11 @@ url = "https://github.com/jpmartineau/MeshTerm"
 note = "Source, releases, and issues."
 tone = "cyan"
 nav = true
+# `opens` marks a link that isn't public yet. Every build asks the url: while it answers
+# a logged-out visitor with 404, the button shows "Opens <opens>" and links nowhere, the
+# top bar and footer leave it out, and the pages spell the address out unlinked. The
+# first build after the repo goes public links it everywhere; delete this line after.
+opens = "22 September"
 
 [[primary]]
 label = "Discord"

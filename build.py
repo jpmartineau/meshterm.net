@@ -29,6 +29,8 @@ import html
 import re
 import shutil
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -70,6 +72,49 @@ _BARE_ADDRESS = re.compile(r"^(?:https?://\S+|[\w.+-]+@[\w-]+(?:\.[\w-]+)+)$")
 esc = html.escape
 
 
+# -- links that aren't open yet --------------------------------------------------------
+
+
+def is_open(url: str) -> bool:
+    """Whether ``url`` answers a logged-out visitor — the question a private repo fails.
+
+    A link carrying ``opens`` in ``site.toml`` is probed at every build rather than
+    trusted to a date: GitHub answers 404 for a private repository, so the first build
+    after it goes public links it without anyone editing anything. Any other answer, or
+    none, stops the build — guessing either way would publish the wrong page.
+    """
+    request = urllib.request.Request(
+        url, method="HEAD", headers={"User-Agent": "meshterm.net build"}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=15):
+            return True
+    except urllib.error.HTTPError as error:
+        if error.code == 404:
+            return False
+        raise SystemExit(f"build.py: {url} answered {error.code}; is it open or not?") from error
+    except urllib.error.URLError as error:
+        raise SystemExit(f"build.py: couldn't reach {url} ({error.reason})") from error
+
+
+def close_unopened(site: dict) -> set[str]:
+    """Settle every ``opens`` link: drop the mark from the open ones, return the rest.
+
+    Returns:
+        The addresses still closed, trailing slash stripped — the pages leave these
+        spelled out rather than linking a visitor to a 404.
+    """
+    closed = set()
+    for group in ("primary", "donate", "social"):
+        for link in site.get(group, []):
+            if "opens" in link:
+                if is_open(link["url"]):
+                    del link["opens"]
+                else:
+                    closed.add(link["url"].rstrip("/"))
+    return closed
+
+
 # -- the pages' words ------------------------------------------------------------------
 
 
@@ -108,12 +153,13 @@ def _is_gap(token: Token) -> bool:
     return token.type == "softbreak" or (token.type == "text" and token.content == " ")
 
 
-def link_addresses(children: list[Token]) -> list[Token]:
+def link_addresses(children: list[Token], closed: set[str]) -> list[Token]:
     """Turn a run's spelled-out ``*https://…*`` addresses into links.
 
     Where the address follows a bold name (``**MeshCore** *https://meshcore.io/*``) the
     name becomes the link and the address, now redundant, is dropped; a lone address
-    (a list item, an email) links itself.
+    (a list item, an email) links itself. An address in ``closed`` is left exactly as the
+    app shows it, spelled out and unlinked, until it opens.
     """
     out: list[Token] = []
     i = 0
@@ -123,6 +169,10 @@ def link_addresses(children: list[Token]) -> list[Token]:
             run[1].content
         ):
             address = run[1].content
+            if address.rstrip("/") in closed:
+                out += run
+                i += 3
+                continue
             href = address if "://" in address else f"mailto:{address}"
             link_open = Token("link_open", "a", 1, attrs={"href": href})
             link_close = Token("link_close", "a", -1)
@@ -160,8 +210,8 @@ def _fence(self, tokens, idx, options, env) -> str:
 _MD.add_render_rule("fence", _fence)
 
 
-def render_page(source: str) -> tuple[str, bool]:
-    """Render a page to HTML.
+def render_page(source: str, closed: set[str]) -> tuple[str, bool]:
+    """Render a page to HTML, leaving the ``closed`` addresses unlinked.
 
     Returns:
         The HTML, and whether the page carries its own ``#`` title (only *about* does;
@@ -171,7 +221,7 @@ def render_page(source: str) -> tuple[str, bool]:
     has_title = False
     for i, token in enumerate(tokens):
         if token.type == "inline":
-            token.children = link_addresses(token.children or [])
+            token.children = link_addresses(token.children or [], closed)
         elif token.type == "heading_open":
             token.attrSet("id", _slug(tokens[i + 1].content))
             if token.tag == "h1":
@@ -241,8 +291,8 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
         f'<li><a href="/{slug}/"{current if path == f"/{slug}/" else ""}>{esc(label)}</a></li>'
         for _, slug, _, label in PAGES
     )
-    linked = [link for link in site.get("primary", []) if link.get("nav")]
-    socials = site.get("social", [])
+    linked = [link for link in site.get("primary", []) if link.get("nav") and "opens" not in link]
+    socials = [link for link in site.get("social", []) if "opens" not in link]
     outside = "\n".join(
         [_external(link) for link in linked] + [_external(link, rel="me") for link in socials]
     )
@@ -295,12 +345,20 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 
 
 def _button(link: dict) -> str:
+    """A neon button — or, for a link that hasn't opened, the same chip carrying its date."""
+    tone = esc(link.get("tone", "cyan"))
     note = f'<span class="btn-note">{esc(link["note"])}</span>' if link.get("note") else ""
+    address = f'<span class="btn-url">{esc(shown(link["url"]))}</span>'
+    if "opens" in link:
+        return (
+            f'<li class="btn-wrap tone-{tone} is-soon"><div class="btn">'
+            f'<span class="btn-label">{esc(link["label"])}'
+            f' <span class="btn-soon">Opens {esc(link["opens"])}</span></span>'
+            f"{note}{address}</div></li>"
+        )
     return (
-        f'<li class="btn-wrap tone-{esc(link.get("tone", "cyan"))}">'
-        f'<a class="btn" href="{esc(link["url"])}">'
-        f'<span class="btn-label">{esc(link["label"])}</span>{note}'
-        f'<span class="btn-url">{esc(shown(link["url"]))}</span></a></li>'
+        f'<li class="btn-wrap tone-{tone}"><a class="btn" href="{esc(link["url"])}">'
+        f'<span class="btn-label">{esc(link["label"])}</span>{note}{address}</a></li>'
     )
 
 
@@ -363,6 +421,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"no MeshTerm pages under {pages_dir}")
 
     site = tomllib.loads((ROOT / "site.toml").read_text(encoding="utf-8"))
+    closed = close_unopened(site)
     facts = meshterm_facts(checkout)
     sources = {
         stem: fill((pages_dir / f"{stem}.md").read_text(encoding="utf-8"), facts)
@@ -389,7 +448,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     for stem, slug, title, _ in PAGES:
-        body, has_title = render_page(sources[stem])
+        body, has_title = render_page(sources[stem], closed)
         heading = "" if has_title else f"<h1>{esc(title)}</h1>\n"
         write(
             OUT / slug / "index.html",
@@ -417,7 +476,8 @@ def main(argv: list[str] | None = None) -> int:
             ),
         ),
     )
-    print(f"built {OUT.relative_to(ROOT)}/ for MeshTerm v{facts['{version}']}")
+    waiting = f", waiting on {', '.join(sorted(closed))}" if closed else ""
+    print(f"built {OUT.relative_to(ROOT)}/ for MeshTerm v{facts['{version}']}{waiting}")
     return 0
 
 

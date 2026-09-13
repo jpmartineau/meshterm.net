@@ -42,6 +42,30 @@ label = "Mastodon"
 url = "https://mastodon.social/@example"
 ```
 
+## Releases update the site
+
+Pushing a MeshTerm version tag runs `github-release.yml` in the MeshTerm repo. Once the
+release is published, its `website` job checks out the tag and this repo, runs `build.py`,
+and pushes `docs/` back here as a commit named after the version — nothing to do by hand.
+
+It pushes with a deploy key that can write to this repository and nothing else, made once
+(from Git Bash):
+
+```bash
+ssh-keygen -t ed25519 -N "" -C "MeshTerm releases" -f ~/site_deploy_key
+gh repo deploy-key add ~/site_deploy_key.pub --repo jpmartineau/meshterm.net --title "MeshTerm releases" --allow-write
+gh secret set SITE_DEPLOY_KEY --repo jpmartineau/MeshTerm < ~/site_deploy_key
+rm ~/site_deploy_key ~/site_deploy_key.pub
+```
+
+## A link that isn't open yet
+
+A `site.toml` link with `opens = "22 September"` is asked at every build whether it answers
+a logged-out visitor. While it answers 404 (a private repository does), its button shows
+*Opens 22 September* and links nowhere, the top bar and footer leave it out, and the pages
+spell its address out unlinked. The first build after it opens links it everywhere — a
+release build, or a manual one — so launch day needs no edit; delete the line afterwards.
+
 ## Hosting
 
 **GitHub Pages:** Settings → Pages → *Deploy from a branch* → `main`, folder `/docs`. The

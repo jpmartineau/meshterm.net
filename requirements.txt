@@ -1,0 +1,6 @@
+# What build.py needs beyond the standard library, pinned to the versions the site was
+# first built with so a CI rebuild draws the same images. Locally, MeshTerm's venv has them.
+markdown-it-py==4.2.0
+segno==1.6.6
+pillow==12.3.0
+tomli==2.4.1; python_version < "3.11"

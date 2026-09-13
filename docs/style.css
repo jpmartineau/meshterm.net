@@ -425,6 +425,32 @@ a:hover {
   font-size: 0.9rem;
 }
 
+/* A link that hasn't opened yet: the same chip without the press — no arrow, no glow,
+   and the day it opens. */
+.is-soon .btn {
+  cursor: default;
+}
+
+.is-soon .btn-label::after {
+  content: none;
+}
+
+.btn-wrap.is-soon:hover {
+  filter: none;
+}
+
+.btn-soon {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.45rem;
+  border: 1px solid var(--yellow-hi);
+  color: var(--yellow-hi);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  vertical-align: 0.2em;
+}
+
 .btn-url {
   color: var(--muted);
   font-size: 0.8rem;
