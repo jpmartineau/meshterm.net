@@ -1,0 +1,51 @@
+# What meshterm.net links to. Edit this, then run build.py (see README.md).
+#
+# Every link takes a label, a url, and optionally a note (a line under the label) and a
+# tone — the neon it glows in: cyan, magenta, blue, red or yellow, the splash art's own
+# Campbell palette.
+
+[site]
+url = "https://meshterm.net"
+title = "MeshTerm — a MeshCore client for your terminal"
+description = "MeshTerm is a full-featured TUI-based MeshCore client for your terminal. Supports USB, Bluetooth and TCP companion connection. For Windows, macOS and Linux."
+
+# The big buttons under the splash. `nav = true` also puts one in the top bar and the
+# footer.
+
+[[primary]]
+label = "GitHub"
+url = "https://github.com/jpmartineau/MeshTerm"
+note = "Source, releases, and issues."
+tone = "cyan"
+nav = true
+
+[[primary]]
+label = "Discord"
+url = "https://discord.gg/AZwe5Uvb3S"
+note = "Questions, ideas, bug reports, and mesh talk."
+tone = "magenta"
+nav = true
+
+# The landing page's Support section. The Support page itself is support.md in MeshTerm.
+
+[[donate]]
+label = "Buy me a coffee"
+url = "https://buymeacoffee.com/johnputer"
+tone = "yellow"
+
+[[donate]]
+label = "PayPal"
+url = "https://tinyurl.com/SupportMeshTerm"
+tone = "blue"
+
+[[donate]]
+label = "Patreon"
+url = "https://www.patreon.com/c/MeshTerm"
+tone = "red"
+
+# Socials land in the top bar and the footer, marked rel="me" so a profile that checks
+# for a link back (Mastodon, Bluesky) can verify the site. None yet — uncomment to add:
+#
+# [[social]]
+# label = "Mastodon"
+# url = "https://mastodon.social/@example"

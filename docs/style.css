@@ -1,0 +1,650 @@
+/* meshterm.net — drawn in the Campbell palette the splash art was drawn in, on black. */
+
+:root {
+  color-scheme: dark;
+  --black: #000000;
+  --panel: #0c0c0c;
+  --line: #1c1c28;
+  --ink: #cccccc;
+  --bright: #f2f2f2;
+  --muted: #94a3b8;
+  --grey: #767676;
+  --red: #c50f1f;
+  --red-hi: #e74856;
+  --blue: #0037da;
+  --blue-hi: #3b78ff;
+  --cyan: #3a96dd;
+  --cyan-hi: #61d6d6;
+  --magenta: #881798;
+  --magenta-hi: #b4009e;
+  --yellow-hi: #f9f1a5;
+  --mono: ui-monospace, "Cascadia Mono", "Cascadia Code", "JetBrains Mono", "SF Mono",
+    Menlo, Consolas, "Liberation Mono", monospace;
+  --wide: 960px;
+  --measure: 72ch;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--black);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--black);
+  color: var(--ink);
+  font: 16px/1.65 var(--mono);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* A haze of the sky's blue from above and the wordmark's magenta from below. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 28rem at 50% -10rem, rgba(0, 55, 218, 0.22), transparent 70%),
+    radial-gradient(44rem 26rem at 90% 115%, rgba(136, 23, 152, 0.2), transparent 70%);
+}
+
+main {
+  flex: 1;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: var(--cyan-hi);
+  text-decoration-color: rgba(97, 214, 214, 0.45);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--bright);
+  text-decoration-color: var(--magenta-hi);
+}
+
+:focus-visible {
+  outline: 2px solid var(--yellow-hi);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  background: var(--black);
+}
+
+/* -- top bar ------------------------------------------------------------------------ */
+
+.site-head {
+  position: relative;
+}
+
+.site-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--magenta-hi) 20%, var(--cyan-hi) 80%, transparent);
+  opacity: 0.55;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--bright);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.brand img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.bar ul,
+.site-foot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar nav a {
+  color: var(--ink);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.bar nav a:hover,
+.bar nav a[aria-current="page"] {
+  color: var(--cyan-hi);
+  text-shadow: 0 0 0.6rem rgba(97, 214, 214, 0.55);
+}
+
+.bar nav a[aria-current="page"]::before {
+  content: "❯ ";
+  color: var(--magenta-hi);
+}
+
+/* -- hero --------------------------------------------------------------------------- */
+
+.hero {
+  padding: 2.75rem 1.25rem 0.5rem;
+  text-align: center;
+}
+
+/* The art sits in a HUD frame: four cyan corner brackets, the art's own black between. */
+.splash {
+  --k: 18px;
+  --t: 2px;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 14px;
+  line-height: 0;
+  background:
+    linear-gradient(var(--cyan-hi) 0 0) top left / var(--k) var(--t) no-repeat,
+    linear-gradient(var(--cyan-hi) 0 0) top left / var(--t) var(--k) no-repeat,
+    linear-gradient(var(--cyan-hi) 0 0) top right / var(--k) var(--t) no-repeat,
+    linear-gradient(var(--cyan-hi) 0 0) top right / var(--t) var(--k) no-repeat,
+    linear-gradient(var(--magenta-hi) 0 0) bottom left / var(--k) var(--t) no-repeat,
+    linear-gradient(var(--magenta-hi) 0 0) bottom left / var(--t) var(--k) no-repeat,
+    linear-gradient(var(--magenta-hi) 0 0) bottom right / var(--k) var(--t) no-repeat,
+    linear-gradient(var(--magenta-hi) 0 0) bottom right / var(--t) var(--k) no-repeat;
+}
+
+.splash img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Scanlines over the art, as a CRT would draw it. */
+.splash::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 2px);
+}
+
+/* Whole multiples only, so every art pixel stays a square block. */
+@media (min-width: 700px) {
+  .splash img {
+    width: 640px;
+    image-rendering: pixelated;
+  }
+}
+
+@media (min-width: 1360px) and (min-height: 900px) {
+  .splash img {
+    width: 1280px;
+  }
+}
+
+/* The one-liner and its facts share one left edge, measured at the body's size. */
+.intro {
+  max-width: 64ch;
+  margin: 1.75rem auto 0;
+  text-align: left;
+}
+
+.tagline {
+  margin: 0 0 0.4rem;
+  color: var(--bright);
+  font-size: 1.05rem;
+}
+
+.prompt {
+  margin-right: 1ch;
+  color: var(--magenta-hi);
+  font-weight: 700;
+  text-shadow: 0 0 0.5rem var(--magenta-hi);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 0.4ch;
+  vertical-align: -0.18em;
+  background: var(--cyan-hi);
+  box-shadow: 0 0 0.6rem var(--cyan-hi);
+  animation: blink 1.06s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+.meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.meta span + span::before {
+  content: "·";
+  margin: 0 0.7em;
+  color: var(--grey);
+}
+
+/* -- sections ----------------------------------------------------------------------- */
+
+.block {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem;
+}
+
+/* A section heading the app's way: ── Label ──, the rule running on to the edge. */
+.rule,
+.page h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--cyan-hi);
+  font-weight: 700;
+}
+
+.rule::before,
+.page h2::before {
+  content: "──";
+  flex: none;
+  color: var(--magenta-hi);
+  letter-spacing: 0;
+}
+
+.rule::after,
+.page h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--magenta-hi), transparent);
+  opacity: 0.6;
+}
+
+.rule {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.lede {
+  margin: 0 0 1.25rem;
+}
+
+/* -- neon buttons ------------------------------------------------------------------- */
+
+.buttons,
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.buttons {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.buttons.compact {
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
+.tone-cyan { --c: var(--cyan-hi); --t: var(--cyan-hi); }
+.tone-magenta { --c: var(--magenta-hi); --t: #e27ad9; }
+.tone-blue { --c: var(--blue-hi); --t: #7aa6ff; }
+.tone-red { --c: var(--red-hi); --t: var(--red-hi); }
+.tone-yellow { --c: var(--yellow-hi); --t: var(--yellow-hi); }
+
+/* The glow lives on the wrapper: the button's clip-path would cut its own shadow off. */
+.btn-wrap {
+  transition: filter 0.15s ease;
+}
+
+.btn-wrap:hover,
+.btn-wrap:focus-within {
+  filter: drop-shadow(0 0 0.55rem var(--c));
+}
+
+/* A cut-corner chip: the tone fills the whole shape and a black inset, cut the same,
+   leaves a one-pixel neon edge. */
+.btn {
+  --cut: 14px;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  height: 100%;
+  padding: 1rem 1.25rem 1.1rem;
+  background: var(--c);
+  color: var(--t);
+  text-decoration: none;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: linear-gradient(135deg, #08080e, var(--black) 65%);
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+}
+
+.btn:hover {
+  color: var(--t);
+}
+
+.btn:focus-visible {
+  outline: none;
+}
+
+.btn:focus-visible::before {
+  inset: 3px;
+}
+
+.btn-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn-label::after {
+  content: " ↗";
+  font-weight: 400;
+  opacity: 0.65;
+}
+
+.btn-note {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.btn-url {
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+/* -- page cards --------------------------------------------------------------------- */
+
+.cards {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  height: 100%;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--magenta-hi);
+  background: linear-gradient(180deg, rgba(12, 12, 16, 0.92), rgba(0, 0, 0, 0.92));
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: var(--cyan-hi);
+  box-shadow: 0 0 1.25rem -0.35rem var(--cyan-hi);
+  color: var(--ink);
+  outline: none;
+}
+
+.card-title {
+  color: var(--bright);
+  font-weight: 700;
+}
+
+.card-text {
+  font-size: 0.9rem;
+}
+
+.card-go {
+  margin-top: 0.25rem;
+  color: var(--cyan-hi);
+  font-size: 0.85rem;
+}
+
+/* -- written pages ------------------------------------------------------------------ */
+
+.page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2.75rem 1.25rem 3rem;
+}
+
+.page h1 {
+  margin: 0 0 0.6rem;
+  color: var(--cyan-hi);
+  font-size: clamp(1.6rem, 4.5vw, 2.25rem);
+  line-height: 1.2;
+  text-shadow: 0 0 0.9rem rgba(97, 214, 214, 0.45);
+}
+
+.page h1 em {
+  margin-left: 0.3ch;
+  color: var(--muted);
+  font-size: 0.55em;
+  font-style: normal;
+  text-shadow: none;
+}
+
+.page h2 {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.1rem;
+}
+
+.page h1 + h2 {
+  margin-top: 1.75rem;
+}
+
+.page h3 {
+  margin: 1.75rem 0 0.5rem;
+  color: var(--bright);
+  font-size: 1rem;
+}
+
+.page h3::before {
+  content: "▸ ";
+  color: var(--magenta-hi);
+}
+
+.page p,
+.page ul,
+.page ol,
+.page blockquote,
+.page pre {
+  margin: 0 0 1rem;
+}
+
+.page strong {
+  color: var(--bright);
+}
+
+.page a strong {
+  color: inherit;
+}
+
+.page ul {
+  padding-left: 1.6rem;
+  list-style: "• ";
+}
+
+.page ul ul {
+  margin: 0.25rem 0 0;
+  list-style: "▸ ";
+}
+
+.page li::marker {
+  color: var(--magenta-hi);
+}
+
+.page li + li {
+  margin-top: 0.25rem;
+}
+
+.page .standfirst,
+.page .colophon {
+  color: var(--muted);
+}
+
+.page .colophon {
+  font-size: 0.85rem;
+}
+
+.page hr {
+  height: 1px;
+  margin: 2.5rem 0 1rem;
+  border: 0;
+  background: linear-gradient(90deg, var(--grey), transparent);
+}
+
+.page code {
+  padding: 0.05em 0.35em;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--yellow-hi);
+}
+
+.page blockquote,
+.page pre {
+  padding-left: 1rem;
+  border-left: 2px solid var(--grey);
+  color: var(--muted);
+}
+
+.page blockquote {
+  margin-left: 0;
+}
+
+.page pre {
+  overflow-x: auto;
+}
+
+.page pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* A QR code is white on black and drawn where its fence was — for pointing a phone at
+   the screen, so a phone doesn't get one. */
+.qr {
+  margin: 0.25rem 0 1.5rem;
+  line-height: 0;
+}
+
+.qr svg {
+  display: block;
+}
+
+@media (max-width: 40rem) {
+  .qr {
+    display: none;
+  }
+}
+
+/* -- footer ------------------------------------------------------------------------- */
+
+.site-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  width: 100%;
+  max-width: var(--wide);
+  margin: 2rem auto 0;
+  padding: 1.5rem 1.25rem 2.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.site-foot p {
+  margin: 0;
+}
+
+.site-foot a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-foot a:hover {
+  color: var(--cyan-hi);
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+}
