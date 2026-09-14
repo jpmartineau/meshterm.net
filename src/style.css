@@ -183,14 +183,22 @@ a:hover {
   text-align: center;
 }
 
-/* The art sits in a HUD frame: four cyan corner brackets, the art's own black between. */
-.splash {
+/* A HUD frame: four corner brackets, cyan above and magenta below, the page's black
+   between. The splash wears it, and so does every screenshot. */
+.hud.splash {
   --k: 18px;
-  --t: 2px;
+  --pad: 14px;
   position: relative;
   display: inline-block;
   max-width: 100%;
-  padding: 14px;
+}
+
+.hud {
+  --k: 12px;
+  --t: 2px;
+  --pad: 8px;
+  display: block;
+  padding: var(--pad);
   line-height: 0;
   background:
     linear-gradient(var(--cyan-hi) 0 0) top left / var(--k) var(--t) no-repeat,
@@ -213,7 +221,7 @@ a:hover {
 .splash::after {
   content: "";
   position: absolute;
-  inset: 14px;
+  inset: var(--pad);
   pointer-events: none;
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 2px);
 }
@@ -498,6 +506,133 @@ a:hover {
   margin-top: 0.25rem;
   color: var(--cyan-hi);
   font-size: 0.85rem;
+}
+
+/* -- screens ------------------------------------------------------------------------ */
+
+/* The gallery breaks out wider than the page on both sides; its heading stays on the
+   page's own edge, in line with every other section's. */
+.block.wide {
+  max-width: 1200px;
+}
+
+.block.wide > .rule {
+  max-width: calc(var(--wide) - 2.5rem);
+  margin-inline: auto;
+}
+
+.screens,
+.captures {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .captures {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* The captures two by two, and the device photo standing beside them. */
+@media (min-width: 1000px) {
+  .screens {
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+  }
+}
+
+.screen {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.screen.device {
+  justify-self: center;
+  width: 100%;
+  max-width: 24rem;
+}
+
+.screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.screen .hud {
+  transition: filter 0.15s ease;
+}
+
+.screen .hud:hover,
+.screen .hud:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 0.5rem rgba(97, 214, 214, 0.5));
+}
+
+.screen figcaption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.screen-title {
+  display: block;
+  color: var(--bright);
+  font-weight: 700;
+}
+
+/* The full-size view: a dialog over the dimmed page, closed with Esc as in the app. */
+.viewer {
+  max-width: min(96vw, 1200px);
+  max-height: 96vh;
+  padding: 0;
+  border: 1px solid var(--cyan-hi);
+  background: var(--black);
+  color: var(--ink);
+  box-shadow: 0 0 2.5rem -0.5rem rgba(97, 214, 214, 0.6);
+}
+
+.viewer::backdrop {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.viewer img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(96vh - 4rem);
+  margin: 0 auto;
+}
+
+.viewer-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.9rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.viewer-caption {
+  margin: 0;
+  color: var(--muted);
+}
+
+.viewer-close {
+  flex: none;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--cyan-hi);
+  font: inherit;
+  cursor: pointer;
+}
+
+.viewer-close:hover {
+  border-color: var(--cyan-hi);
 }
 
 /* -- written pages ------------------------------------------------------------------ */

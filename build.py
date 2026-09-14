@@ -4,7 +4,8 @@
 Everything under ``docs/`` — the folder GitHub Pages serves — is generated here and is
 never edited by hand. It is made from three sources:
 
-- ``site.toml``, the links: the landing page's buttons, the donation buttons, socials.
+- ``site.toml``, the links and the screens: the landing page's buttons, the donation
+  buttons, socials, and which of MeshTerm's ``docs/screenshots`` the landing page shows.
 - ``src/``, the look: the stylesheet and the two pieces of art, logo and splash.
 - the MeshTerm checkout beside this repo, the words. ``meshterm/assets/pages/*.md`` are
   the very pages the app draws under *About MeshTerm*, so the site cannot say something
@@ -273,6 +274,99 @@ def build_art() -> None:
     logo.save(OUT / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
 
 
+#: The widest a device photo leaves at: the page never draws one wider than about 400px,
+#: and the full-size view gets the rest.
+DEVICE_WIDTH = 900
+
+
+def build_screens(screens: list[dict], source: Path) -> list[dict]:
+    """Copy the landing page's screens out of MeshTerm's ``docs/screenshots``.
+
+    A terminal capture is text at one image pixel per screen pixel, so it keeps its size
+    and stays a PNG — the very file, when nothing in it is transparent, since re-encoding
+    only makes it bigger. A device photo carries a camera's worth of detail nobody needs at
+    page size, so it leaves as a JPEG no wider than :data:`DEVICE_WIDTH`.
+
+    Returns:
+        Each screen's ``site.toml`` entry plus where the page finds it and its size.
+    """
+    out = OUT / "assets" / "screens"
+    out.mkdir(parents=True, exist_ok=True)
+    built = []
+    for screen in screens:
+        path = source / screen["file"]
+        if not path.is_file():
+            raise SystemExit(f"build.py: site.toml names a screen MeshTerm doesn't have: {path}")
+        image = Image.open(path)
+        stem = Path(screen["file"]).stem
+        opaque = "A" not in image.getbands() or image.getchannel("A").getextrema()[0] == 255
+        if not screen.get("device") and path.suffix.lower() == ".png" and opaque:
+            shutil.copyfile(path, out / f"{stem}.png")
+            built.append(
+                {**screen, "src": f"/assets/screens/{stem}.png", "width": image.width, "height": image.height}
+            )
+            continue
+        if "A" in image.getbands() or image.mode == "P":
+            rgba = image.convert("RGBA")
+            image = Image.new("RGB", rgba.size)
+            image.paste(rgba, mask=rgba.getchannel("A"))
+        else:
+            image = image.convert("RGB")
+        if screen.get("device"):
+            if image.width > DEVICE_WIDTH:
+                height = round(image.height * DEVICE_WIDTH / image.width)
+                image = image.resize((DEVICE_WIDTH, height), Image.LANCZOS)
+            name = f"{stem}.jpg"
+            image.save(out / name, quality=82, optimize=True, progressive=True)
+        else:
+            name = f"{stem}.png"
+            image.save(out / name, optimize=True)
+        built.append(
+            {**screen, "src": f"/assets/screens/{name}", "width": image.width, "height": image.height}
+        )
+    return built
+
+
+def _screen(screen: dict) -> str:
+    kind = " device" if screen.get("device") else ""
+    title, caption = esc(screen["title"]), esc(screen["caption"])
+    return (
+        f'<figure class="screen{kind}">'
+        f'<a class="hud" href="{screen["src"]}" data-full data-caption="{title} — {caption}">'
+        f'<img src="{screen["src"]}" width="{screen["width"]}" height="{screen["height"]}"'
+        f' loading="lazy" alt="{title} screenshot"></a>'
+        f'<figcaption><span class="screen-title">{title}</span> {caption}</figcaption></figure>'
+    )
+
+
+#: The full-size view: a ``<dialog>`` over the dimmed page, closed with Esc like everything
+#: in MeshTerm. Without JavaScript each screen is a plain link to its image instead.
+VIEWER = """<dialog class="viewer" aria-label="Screenshot">
+<img alt="">
+<div class="viewer-bar"><p class="viewer-caption"></p><form method="dialog"><button class="viewer-close">Esc close</button></form></div>
+</dialog>
+<script>
+(() => {
+  const viewer = document.querySelector(".viewer");
+  if (!viewer || typeof viewer.showModal !== "function") return;
+  const image = viewer.querySelector("img");
+  const caption = viewer.querySelector(".viewer-caption");
+  for (const link of document.querySelectorAll("a[data-full]")) {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      image.src = link.href;
+      image.alt = link.querySelector("img").alt;
+      caption.textContent = link.dataset.caption;
+      viewer.showModal();
+    });
+  }
+  viewer.addEventListener("click", (event) => {
+    if (event.target === viewer) viewer.close();
+  });
+})();
+</script>"""
+
+
 # -- the frame -------------------------------------------------------------------------
 
 
@@ -362,8 +456,20 @@ def _button(link: dict) -> str:
     )
 
 
-def landing(site: dict, facts: dict[str, str], sources: dict[str, str]) -> str:
-    """The front page: the splash, the one-liner, the buttons, the pages, the tip jar."""
+def landing(
+    site: dict, facts: dict[str, str], sources: dict[str, str], screens: list[dict]
+) -> str:
+    """The front page: the splash, the one-liner, the buttons, the screens, the pages, the tip jar."""
+    captures = "\n".join(_screen(s) for s in screens if not s.get("device"))
+    devices = "\n".join(_screen(s) for s in screens if s.get("device"))
+    gallery = (
+        '<section class="block wide" aria-labelledby="screens">\n'
+        '<h2 class="rule" id="screens">Screens</h2>\n'
+        f'<div class="screens">\n<div class="captures">\n{captures}\n</div>\n{devices}\n</div>\n'
+        "</section>\n"
+        if screens
+        else ""
+    )
     buttons = "\n".join(_button(link) for link in site.get("primary", []))
     donate = "\n".join(_button(link) for link in site.get("donate", []))
     cards = "\n".join(
@@ -375,7 +481,7 @@ def landing(site: dict, facts: dict[str, str], sources: dict[str, str]) -> str:
     )
     return f"""<section class="hero">
 <h1 class="visually-hidden">MeshTerm</h1>
-<div class="splash"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
+<div class="splash hud"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
 <div class="intro">
 <p class="tagline"><span class="prompt" aria-hidden="true">&gt;</span>{esc(site["site"]["description"])}<span class="cursor" aria-hidden="true"></span></p>
 <p class="meta"><span>v{esc(facts["{version}"])}</span><span>Apache-2.0</span></p>
@@ -386,7 +492,7 @@ def landing(site: dict, facts: dict[str, str], sources: dict[str, str]) -> str:
 {buttons}
 </ul>
 </section>
-<section class="block" aria-labelledby="read">
+{gallery}<section class="block" aria-labelledby="read">
 <h2 class="rule" id="read">About</h2>
 <ul class="cards">
 {cards}
@@ -398,7 +504,8 @@ def landing(site: dict, facts: dict[str, str], sources: dict[str, str]) -> str:
 <ul class="buttons compact">
 {donate}
 </ul>
-</section>"""
+</section>
+{VIEWER if screens else ""}"""
 
 
 def write(path: Path, text: str) -> None:
@@ -432,6 +539,7 @@ def main(argv: list[str] | None = None) -> int:
         shutil.rmtree(OUT)
     OUT.mkdir()
     build_art()
+    screens = build_screens(site.get("screen", []), checkout / "docs" / "screenshots")
     shutil.copyfile(SRC / "style.css", OUT / "style.css")
     write(OUT / "CNAME", f"{urlparse(site['site']['url']).hostname}\n")
     write(OUT / ".nojekyll", "")
@@ -444,7 +552,7 @@ def main(argv: list[str] | None = None) -> int:
             title=site["site"]["title"],
             path="/",
             description=site["site"]["description"],
-            body=landing(site, facts, sources),
+            body=landing(site, facts, sources, screens),
         ),
     )
     for stem, slug, title, _ in PAGES:

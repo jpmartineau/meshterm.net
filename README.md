@@ -10,6 +10,7 @@ Pages from `docs/`.
 | `site.toml` | the links — the landing page's buttons, the donation buttons, socials |
 | `src/` | the look — `style.css`, and the logo and splash art every image is derived from |
 | `../MeshTerm/meshterm/assets/pages/` | the words — `about.md`, `author.md` and `support.md`, the same files the app draws, plus the version and copyright line from `meshterm/__init__.py` |
+| `../MeshTerm/docs/screenshots/` | the screens — the README's captures and the PicoCalc photo, whichever `site.toml` lists |
 
 ## Rebuild
 

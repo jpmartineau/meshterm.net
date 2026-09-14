@@ -48,6 +48,37 @@ label = "Patreon"
 url = "https://www.patreon.com/c/MeshTerm"
 tone = "red"
 
+# The screens on the landing page, in order, taken from MeshTerm's docs/screenshots/ (the
+# files the README shows). A terminal capture keeps its pixels and stays a PNG; one marked
+# `device = true` is a photo of the hardware, which leaves as a JPEG and takes the tall
+# slot beside the captures.
+
+[[screen]]
+file = "dashboard.png"
+title = "Dashboard"
+caption = "A packets-per-minute timeline over the last two hours, and every packet class counted."
+
+[[screen]]
+file = "map.png"
+title = "Map"
+caption = "Repeaters named over an OpenStreetMap basemap of the Lachine Canal."
+
+[[screen]]
+file = "trace.png"
+title = "Trace"
+caption = "The route it walked drawn as chips, then the SNR of every hop."
+
+[[screen]]
+file = "path.png"
+title = "Message paths"
+caption = "Every route a channel message was heard over, drawn on the ground."
+
+[[screen]]
+file = "picocalc.png"
+title = "PicoCalc"
+caption = "The whole thing on a 53-column console, with a radio wired inside."
+device = true
+
 # Socials land in the top bar and the footer, marked rel="me" so a profile that checks
 # for a link back (Mastodon, Bluesky) can verify the site. None yet — uncomment to add:
 #

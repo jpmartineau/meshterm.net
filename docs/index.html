@@ -37,7 +37,7 @@
 <main id="main">
 <section class="hero">
 <h1 class="visually-hidden">MeshTerm</h1>
-<div class="splash"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
+<div class="splash hud"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
 <div class="intro">
 <p class="tagline"><span class="prompt" aria-hidden="true">&gt;</span>MeshTerm is a full-featured TUI-based MeshCore client for your terminal. Supports USB, Bluetooth and TCP companion connection. For Windows, macOS and Linux.<span class="cursor" aria-hidden="true"></span></p>
 <p class="meta"><span>v0.3.4</span><span>Apache-2.0</span></p>
@@ -48,6 +48,18 @@
 <li class="btn-wrap tone-cyan is-soon"><div class="btn"><span class="btn-label">GitHub <span class="btn-soon">Opens 22 September</span></span><span class="btn-note">Source, releases, and issues.</span><span class="btn-url">github.com/jpmartineau/MeshTerm</span></div></li>
 <li class="btn-wrap tone-magenta"><a class="btn" href="https://discord.gg/AZwe5Uvb3S"><span class="btn-label">Discord</span><span class="btn-note">Questions, ideas, bug reports, and mesh talk.</span><span class="btn-url">discord.gg/AZwe5Uvb3S</span></a></li>
 </ul>
+</section>
+<section class="block wide" aria-labelledby="screens">
+<h2 class="rule" id="screens">Screens</h2>
+<div class="screens">
+<div class="captures">
+<figure class="screen"><a class="hud" href="/assets/screens/dashboard.png" data-full data-caption="Dashboard — A packets-per-minute timeline over the last two hours, and every packet class counted."><img src="/assets/screens/dashboard.png" width="653" height="586" loading="lazy" alt="Dashboard screenshot"></a><figcaption><span class="screen-title">Dashboard</span> A packets-per-minute timeline over the last two hours, and every packet class counted.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/map.png" data-full data-caption="Map — Repeaters named over an OpenStreetMap basemap of the Lachine Canal."><img src="/assets/screens/map.png" width="653" height="586" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Repeaters named over an OpenStreetMap basemap of the Lachine Canal.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/trace.png" data-full data-caption="Trace — The route it walked drawn as chips, then the SNR of every hop."><img src="/assets/screens/trace.png" width="734" height="586" loading="lazy" alt="Trace screenshot"></a><figcaption><span class="screen-title">Trace</span> The route it walked drawn as chips, then the SNR of every hop.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/path.png" data-full data-caption="Message paths — Every route a channel message was heard over, drawn on the ground."><img src="/assets/screens/path.png" width="734" height="586" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Every route a channel message was heard over, drawn on the ground.</figcaption></figure>
+</div>
+<figure class="screen device"><a class="hud" href="/assets/screens/picocalc.jpg" data-full data-caption="PicoCalc — The whole thing on a 53-column console, with a radio wired inside."><img src="/assets/screens/picocalc.jpg" width="900" height="1361" loading="lazy" alt="PicoCalc screenshot"></a><figcaption><span class="screen-title">PicoCalc</span> The whole thing on a 53-column console, with a radio wired inside.</figcaption></figure>
+</div>
 </section>
 <section class="block" aria-labelledby="read">
 <h2 class="rule" id="read">About</h2>
@@ -65,6 +77,30 @@
 <li class="btn-wrap tone-red"><a class="btn" href="https://www.patreon.com/c/MeshTerm"><span class="btn-label">Patreon</span><span class="btn-url">www.patreon.com/c/MeshTerm</span></a></li>
 </ul>
 </section>
+<dialog class="viewer" aria-label="Screenshot">
+<img alt="">
+<div class="viewer-bar"><p class="viewer-caption"></p><form method="dialog"><button class="viewer-close">Esc close</button></form></div>
+</dialog>
+<script>
+(() => {
+  const viewer = document.querySelector(".viewer");
+  if (!viewer || typeof viewer.showModal !== "function") return;
+  const image = viewer.querySelector("img");
+  const caption = viewer.querySelector(".viewer-caption");
+  for (const link of document.querySelectorAll("a[data-full]")) {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      image.src = link.href;
+      image.alt = link.querySelector("img").alt;
+      caption.textContent = link.dataset.caption;
+      viewer.showModal();
+    });
+  }
+  viewer.addEventListener("click", (event) => {
+    if (event.target === viewer) viewer.close();
+  });
+})();
+</script>
 </main>
 <footer class="site-foot">
 <p>Copyright © 2026 Jean-Pierre Martineau</p>
