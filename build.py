@@ -541,7 +541,9 @@ def main(argv: list[str] | None = None) -> int:
     build_art()
     screens = build_screens(site.get("screen", []), checkout / "docs" / "screenshots")
     shutil.copyfile(SRC / "style.css", OUT / "style.css")
-    write(OUT / "CNAME", f"{urlparse(site['site']['url']).hostname}\n")
+    # No trailing newline: GitHub writes the file that way whenever the custom domain is
+    # saved in the repository settings, so matching it keeps a rebuild from diffing it.
+    write(OUT / "CNAME", urlparse(site["site"]["url"]).hostname)
     write(OUT / ".nojekyll", "")
 
     write(
