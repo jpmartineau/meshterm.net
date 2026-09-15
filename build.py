@@ -412,6 +412,7 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "3122778111a44031ab688d821934c7ae"}}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

@@ -71,7 +71,7 @@ caption = "The route it walked drawn as chips, then the SNR of every hop."
 [[screen]]
 file = "path.png"
 title = "Message paths"
-caption = "Every route a channel message was heard over, drawn on the ground."
+caption = "Visualize every path a message took to reach you."
 
 [[screen]]
 file = "picocalc.png"
