@@ -361,12 +361,6 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
 }
 
-.tone-cyan { --c: var(--cyan-hi); --t: var(--cyan-hi); }
-.tone-magenta { --c: var(--magenta-hi); --t: #e27ad9; }
-.tone-blue { --c: var(--blue-hi); --t: #7aa6ff; }
-.tone-red { --c: var(--red-hi); --t: var(--red-hi); }
-.tone-yellow { --c: var(--yellow-hi); --t: var(--yellow-hi); }
-
 /* The glow lives on the wrapper: the button's clip-path would cut its own shadow off. */
 .btn-wrap {
   transition: filter 0.15s ease;
@@ -389,7 +383,7 @@ a:hover {
   height: 100%;
   padding: 1rem 1.25rem 1.1rem;
   background: var(--c);
-  color: var(--t);
+  color: var(--c);
   text-decoration: none;
   clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
 }
@@ -404,7 +398,7 @@ a:hover {
 }
 
 .btn:hover {
-  color: var(--t);
+  color: var(--c);
 }
 
 .btn:focus-visible {

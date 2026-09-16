@@ -1,8 +1,9 @@
 # What meshterm.net links to. Edit this, then run build.py (see README.md).
 #
 # Every link takes a label, a url, and optionally a note (a line under the label) and a
-# tone — the neon it glows in: cyan, magenta, blue, red or yellow, the splash art's own
-# Campbell palette.
+# color — the neon it glows in, as #rrggbb. A button wears its destination's own brand
+# colour, so a visitor knows where it goes before reading it; where a brand has several,
+# pick the one that reads on black (PayPal's light blue, not its navy; GitHub's white).
 
 [site]
 url = "https://meshterm.net"
@@ -28,7 +29,7 @@ posthog_host = "https://us.i.posthog.com"
 label = "GitHub"
 url = "https://github.com/jpmartineau/MeshTerm"
 note = "Source, releases, and issues."
-tone = "cyan"
+color = "#f0f6fc"
 nav = true
 # `opens` marks a link that isn't public yet. Every build asks the url: while it answers
 # a logged-out visitor with 404, the button shows "Opens <opens>" and links nowhere, the
@@ -40,14 +41,14 @@ opens = "22 September"
 label = "Discord"
 url = "https://discord.gg/AZwe5Uvb3S"
 note = "Questions, ideas, bug reports, and mesh talk."
-tone = "magenta"
+color = "#5865f2"
 nav = true
 
 [[primary]]
 label = "Reddit"
 url = "https://www.reddit.com/r/MeshTerm/"
 note = "News, screenshots, and show-and-tell."
-tone = "red"
+color = "#ff4500"
 nav = true
 
 # The landing page's Support section. The Support page itself is support.md in MeshTerm.
@@ -55,17 +56,17 @@ nav = true
 [[donate]]
 label = "Buy me a coffee"
 url = "https://buymeacoffee.com/johnputer"
-tone = "yellow"
+color = "#ffdd00"
 
 [[donate]]
 label = "PayPal"
 url = "https://www.paypal.com/donate/?hosted_button_id=5RATNEJP2K5U6"
-tone = "blue"
+color = "#009cde"
 
 [[donate]]
 label = "Patreon"
 url = "https://www.patreon.com/c/MeshTerm"
-tone = "red"
+color = "#ff424d"
 
 # The screens on the landing page, in order, taken from MeshTerm's docs/screenshots/ (the
 # files the README shows). A terminal capture keeps its pixels and stays a PNG; one marked

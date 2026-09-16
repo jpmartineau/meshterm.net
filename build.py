@@ -470,18 +470,21 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 
 def _button(link: dict) -> str:
     """A neon button — or, for a link that hasn't opened, the same chip carrying its date."""
-    tone = esc(link.get("tone", "cyan"))
+    color = link.get("color", "#61d6d6")
+    if not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
+        raise SystemExit(f"site.toml: {link['label']} color {color!r} is not #rrggbb")
+    style = f' style="--c: {color}"'
     note = f'<span class="btn-note">{esc(link["note"])}</span>' if link.get("note") else ""
     address = f'<span class="btn-url">{esc(shown(link["url"]))}</span>'
     if "opens" in link:
         return (
-            f'<li class="btn-wrap tone-{tone} is-soon"><div class="btn">'
+            f'<li class="btn-wrap is-soon"{style}><div class="btn">'
             f'<span class="btn-label">{esc(link["label"])}'
             f' <span class="btn-soon">Opens {esc(link["opens"])}</span></span>'
             f"{note}{address}</div></li>"
         )
     return (
-        f'<li class="btn-wrap tone-{tone}"><a class="btn" href="{esc(link["url"])}">'
+        f'<li class="btn-wrap"{style}><a class="btn" href="{esc(link["url"])}">'
         f'<span class="btn-label">{esc(link["label"])}</span>{note}{address}</a></li>'
     )
 
