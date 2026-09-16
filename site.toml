@@ -61,7 +61,7 @@ caption = "See how busy the mesh is, minute by minute."
 [[screen]]
 file = "map.png"
 title = "Map"
-caption = "See where the nodes around you are, on a real map."
+caption = "Explore the nodes around you on the map."
 
 [[screen]]
 file = "trace.png"
@@ -76,7 +76,7 @@ caption = "Visualize every path a message took to reach you."
 [[screen]]
 file = "picocalc.png"
 title = "PicoCalc"
-caption = "The whole app on a PicoCalc handheld, radio included."
+caption = "A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in."
 device = true
 
 # Socials land in the top bar and the footer, marked rel="me" so a profile that checks
