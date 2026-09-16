@@ -333,7 +333,7 @@ def _screen(screen: dict) -> str:
     title, caption = esc(screen["title"]), esc(screen["caption"])
     return (
         f'<figure class="screen{kind}">'
-        f'<a class="hud" href="{screen["src"]}" data-full data-caption="{title} — {caption}">'
+        f'<a class="hud" href="{screen["src"]}"{tracked("screen-" + slug(screen["title"]), "screens")} data-full data-caption="{title} — {caption}">'
         f'<img src="{screen["src"]}" width="{screen["width"]}" height="{screen["height"]}"'
         f' loading="lazy" alt="{title} screenshot"></a>'
         f'<figcaption><span class="screen-title">{title}</span> {caption}</figcaption></figure>'
@@ -371,9 +371,38 @@ VIEWER = """<dialog class="viewer" aria-label="Screenshot">
 # -- the frame -------------------------------------------------------------------------
 
 
-def _external(link: dict, *, rel: str = "") -> str:
+def tracked(name: str, placement: str) -> str:
+    """The attributes that name a link for PostHog, which sends them with every click on it.
+
+    Autocapture already records each click, but it knows a link only by its text and its
+    place in the page, and a chart built on either quietly stops counting the day the
+    wording or the layout changes. ``button`` is the link's own name, the same wherever it
+    appears; ``placement`` says which of its appearances was clicked.
+    """
+    return (
+        f' data-ph-capture-attribute-button="{esc(name)}"'
+        f' data-ph-capture-attribute-placement="{esc(placement)}"'
+    )
+
+
+def slug(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def link_name(link: dict) -> str:
+    """A ``site.toml`` link's tracking name: its ``track`` key, else its label as a slug.
+
+    Give a link ``track`` before renaming its label, so its clicks keep their old name.
+    """
+    return link.get("track") or slug(link["label"])
+
+
+def _external(link: dict, placement: str, *, rel: str = "") -> str:
     rel_attr = f' rel="{rel}"' if rel else ""
-    return f'<li><a href="{esc(link["url"])}"{rel_attr}>{esc(link["label"])}</a></li>'
+    return (
+        f'<li><a href="{esc(link["url"])}"{rel_attr}{tracked(link_name(link), placement)}>'
+        f'{esc(link["label"])}</a></li>'
+    )
 
 
 #: Microsoft Clarity's loader, as its setup page gives it.
@@ -411,14 +440,19 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
         title = f"{title} · MeshTerm"
     current = ' aria-current="page"'
     internal = "\n".join(
-        f'<li><a href="/{slug}/"{current if path == f"/{slug}/" else ""}>{esc(label)}</a></li>'
-        for _, slug, _, label in PAGES
+        f'<li><a href="/{page}/"{current if path == f"/{page}/" else ""}{tracked(page, "nav")}>'
+        f"{esc(label)}</a></li>"
+        for _, page, _, label in PAGES
     )
     linked = [link for link in site.get("primary", []) if link.get("nav") and "opens" not in link]
     socials = [link for link in site.get("social", []) if "opens" not in link]
-    outside = "\n".join(
-        [_external(link) for link in linked] + [_external(link, rel="me") for link in socials]
-    )
+
+    def outside(placement: str) -> str:
+        return "\n".join(
+            [_external(link, placement) for link in linked]
+            + [_external(link, placement, rel="me") for link in socials]
+        )
+
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -447,10 +481,10 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-head">
 <div class="bar">
-<a class="brand" href="/"><img src="/assets/logo-96.png" width="32" height="32" alt=""><span>MeshTerm</span></a>
+<a class="brand" href="/"{tracked("home", "nav")}><img src="/assets/logo-96.png" width="32" height="32" alt=""><span>MeshTerm</span></a>
 <nav aria-label="Site"><ul>
 {internal}
-{outside}
+{outside("nav")}
 </ul></nav>
 </div>
 </header>
@@ -460,7 +494,7 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 <footer class="site-foot">
 <p>{esc(facts["{copyright}"])}</p>
 <ul>
-{outside}
+{outside("footer")}
 </ul>
 </footer>
 </body>
@@ -468,7 +502,7 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 """
 
 
-def _button(link: dict) -> str:
+def _button(link: dict, placement: str) -> str:
     """A neon button — or, for a link that hasn't opened, the same chip carrying its date."""
     color = link.get("color", "#61d6d6")
     if not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
@@ -484,7 +518,7 @@ def _button(link: dict) -> str:
             f"{note}{address}</div></li>"
         )
     return (
-        f'<li class="btn-wrap"{style}><a class="btn" href="{esc(link["url"])}">'
+        f'<li class="btn-wrap"{style}><a class="btn" href="{esc(link["url"])}"{tracked(link_name(link), placement)}>'
         f'<span class="btn-label">{esc(link["label"])}</span>{note}{address}</a></li>'
     )
 
@@ -503,10 +537,10 @@ def landing(
         if screens
         else ""
     )
-    buttons = "\n".join(_button(link) for link in site.get("primary", []))
-    donate = "\n".join(_button(link) for link in site.get("donate", []))
+    buttons = "\n".join(_button(link, "buttons") for link in site.get("primary", []))
+    donate = "\n".join(_button(link, "donate") for link in site.get("donate", []))
     cards = "\n".join(
-        f'<li><a class="card" href="/{slug}/"><span class="card-title">{esc(title)}</span>'
+        f'<li><a class="card" href="/{slug}/"{tracked(slug, "card")}><span class="card-title">{esc(title)}</span>'
         f'<span class="card-text">{esc(teaser(sources[stem]))}</span>'
         f'<span class="card-go" aria-hidden="true">Read →</span></a></li>'
         for stem, slug, title, _ in PAGES
@@ -533,7 +567,7 @@ def landing(
 </section>
 <section class="block" aria-labelledby="chip-in">
 <h2 class="rule" id="chip-in">Support</h2>
-<p class="lede">{esc(teaser(sources["support"]))} <a href="/support/">Why it needs support →</a></p>
+<p class="lede">{esc(teaser(sources["support"]))} <a href="/support/"{tracked("support", "lede")}>Why it needs support →</a></p>
 <ul class="buttons compact">
 {donate}
 </ul>

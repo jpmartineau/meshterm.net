@@ -23,7 +23,8 @@ posthog_key = "phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D"
 posthog_host = "https://us.i.posthog.com"
 
 # The big buttons under the splash. `nav = true` also puts one in the top bar and the
-# footer.
+# footer. Clicks reach PostHog named by the label as a slug (`buy-me-a-coffee`); set
+# `track = "old-name"` on a link before relabelling it, so its charts keep counting.
 
 [[primary]]
 label = "GitHub"
