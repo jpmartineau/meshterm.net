@@ -43,6 +43,13 @@ note = "Questions, ideas, bug reports, and mesh talk."
 tone = "magenta"
 nav = true
 
+[[primary]]
+label = "Reddit"
+url = "https://www.reddit.com/r/MeshTerm/"
+note = "News, screenshots, and show-and-tell."
+tone = "red"
+nav = true
+
 # The landing page's Support section. The Support page itself is support.md in MeshTerm.
 
 [[donate]]
