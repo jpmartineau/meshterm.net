@@ -9,6 +9,18 @@ url = "https://meshterm.net"
 title = "MeshTerm — a MeshCore client for your terminal"
 description = "MeshTerm is a full-featured MeshCore client that lives in your terminal. Connect your device over USB, Bluetooth, or TCP. For Windows, macOS, and Linux. Free and open-source."
 
+# Behaviour analytics, beside the Cloudflare page counts every page already carries. Each
+# is left out of the pages while its value is empty.
+#   clarity: the project ID from clarity.microsoft.com → Settings → Setup (recordings,
+#     heatmaps, scroll depth).
+#   posthog_key: the project API key (phc_…) from PostHog → Project settings (events,
+#     funnels, recordings). posthog_host is the region the project lives in: us or eu.
+
+[analytics]
+clarity = ""
+posthog_key = "phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D"
+posthog_host = "https://us.i.posthog.com"
+
 # The big buttons under the splash. `nav = true` also puts one in the top bar and the
 # footer.
 

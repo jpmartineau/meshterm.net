@@ -43,6 +43,17 @@ label = "Mastodon"
 url = "https://mastodon.social/@example"
 ```
 
+## Analytics
+
+Every page carries Cloudflare Web Analytics for page counts. For how visitors behave, fill in
+`[analytics]` in `site.toml` and rebuild. A tracker whose ID is empty stays out of the pages.
+
+- **Microsoft Clarity** (`clarity`): session recordings, click and scroll heatmaps. The
+  project ID is under Settings → Setup at <https://clarity.microsoft.com>.
+- **PostHog** (`posthog_key`, `posthog_host`): events, funnels, recordings. The project API
+  key (`phc_…`) is under Project settings; set the host to `https://eu.i.posthog.com` for an
+  EU project.
+
 ## Releases update the site
 
 Pushing a MeshTerm version tag runs `github-release.yml` in the MeshTerm repo. Once the
