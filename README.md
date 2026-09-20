@@ -71,6 +71,20 @@ image. An inline player there needs a `user-attachments` URL, which means upload
 same file again through a comment box on that repo. This copy is the one the website
 plays and the one that is actually ours.
 
+## The repository's social preview
+
+`build.py` also writes `docs/assets/social-preview.png` at 1280x640, the size GitHub
+asks for. It is the same splash art as the site's own `og.png`, from the same original
+and the same pipeline, so the two cards cannot drift apart.
+
+Uploading it is the one step that is not automatable: GitHub has no API for a
+repository's social preview, so it goes in by hand under **Settings -> General ->
+Social preview -> Edit -> Upload an image**. Do it once; it survives everything after.
+
+The art is deliberately the wordmark rather than a screenshot. A link card renders at
+about 400px wide in Discord, and a terminal capture at that size is unreadable mush
+while pixel art is still pixel art.
+
 ## Analytics
 
 Every page carries Cloudflare Web Analytics for page counts. For how visitors behave, fill in

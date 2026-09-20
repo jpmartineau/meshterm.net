@@ -261,13 +261,23 @@ def build_art() -> None:
     splash = Image.open(SRC / "splash.png").convert("RGB").crop(SPLASH_BOX)
     splash.save(assets / "splash.png", optimize=True)
 
-    # The link preview Discord and friends unfurl: the art doubled pixel-for-pixel, then
-    # eased down to fit a 1200×630 card.
+    # The link previews: the art doubled pixel-for-pixel, then eased down onto a card and
+    # centred, which leaves the black field above and below as the margin.
     doubled = splash.resize((splash.width * 2, splash.height * 2), Image.NEAREST)
-    fitted = doubled.resize((1120, 1120 * splash.height // splash.width), Image.LANCZOS)
-    card = Image.new("RGB", (1200, 630))
-    card.paste(fitted, ((card.width - fitted.width) // 2, (card.height - fitted.height) // 2))
-    card.save(assets / "og.png", optimize=True)
+
+    def card(size: tuple[int, int], art_width: int, name: str) -> None:
+        fitted = doubled.resize((art_width, art_width * splash.height // splash.width), Image.LANCZOS)
+        out = Image.new("RGB", size)
+        out.paste(fitted, ((size[0] - fitted.width) // 2, (size[1] - fitted.height) // 2))
+        out.save(assets / name, optimize=True)
+
+    # What Discord and friends unfurl from a link to the site.
+    card((1200, 630), 1120, "og.png")
+    # What they unfurl from a link to the *repository*: GitHub asks for 1280×640, and it
+    # is uploaded by hand in the repo settings, which has no API. Built here anyway, so it
+    # is derived from the same original as everything else rather than drawn once by hand
+    # and then slowly diverging from the art it came from.
+    card((1280, 640), 1180, "social-preview.png")
 
     logo = Image.open(SRC / "logo.png").convert("RGB")
     logo.resize((96, 96), Image.LANCZOS).save(assets / "logo-96.png", optimize=True)
