@@ -74,6 +74,11 @@ color = "#ff424d"
 [demo]
 file = "demo.mp4"
 poster = "demo-poster.png"
+# The same frame with a play mark and the running time burned in. The page never
+# shows it: it is what MeshTerm's README links, because GitHub will not play an mp4
+# that is not one of its own attachments, so there the demo has to be a picture that
+# announces itself as one.
+card = "demo-play.png"
 title = "Watch it"
 caption = "Under two minutes on a real mesh: pairing over Bluetooth, then every route one channel message took to arrive, a trace out and back across the city, a repeater administered over the air, and a packet read out of the live feed."
 

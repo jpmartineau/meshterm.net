@@ -343,7 +343,7 @@ def build_demo(demo: dict) -> dict:
     out = OUT / "assets"
     out.mkdir(parents=True, exist_ok=True)
     built = dict(demo)
-    for key in ("file", "poster"):
+    for key in ("file", "poster", "card"):
         path = SRC / demo[key]
         if not path.is_file():
             raise SystemExit(f"build.py: site.toml names a demo file src/ lacks: {path}")
