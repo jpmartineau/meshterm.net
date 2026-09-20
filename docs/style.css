@@ -502,6 +502,38 @@ a:hover {
   font-size: 0.85rem;
 }
 
+/* -- demo --------------------------------------------------------------------------- */
+
+/* The recording is a terminal capture, one image pixel per screen pixel, so scaling it
+   up is exactly what turns its text to mush. The frame stops at the video's own width
+   and the page keeps the rest as margin. */
+.demo {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+
+.demo .hud {
+  width: 100%;
+  max-width: calc(840px + 2 * 8px); /* the capture, plus the frame's own padding */
+}
+
+.demo video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+
+.demo figcaption {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
 /* -- screens ------------------------------------------------------------------------ */
 
 /* The gallery breaks out wider than the page on both sides; its heading stays on the

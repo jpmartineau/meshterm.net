@@ -328,6 +328,55 @@ def build_screens(screens: list[dict], source: Path) -> list[dict]:
     return built
 
 
+def build_demo(demo: dict) -> dict:
+    """Copy the demo recording and its poster frame out of ``src/``.
+
+    The video is *copied*, never re-encoded. It is already H.264 High in ``yuv420p``
+    with its ``moov`` box ahead of the media, which is what lets a browser start
+    playing before the whole file has arrived; re-encoding here would cost quality and
+    put ffmpeg in the build's way for nothing.
+
+    Returns:
+        The ``site.toml`` entry plus where the page finds each file, and the poster's
+        pixel size -- which is also the widest the page will ever draw the video.
+    """
+    out = OUT / "assets"
+    out.mkdir(parents=True, exist_ok=True)
+    built = dict(demo)
+    for key in ("file", "poster"):
+        path = SRC / demo[key]
+        if not path.is_file():
+            raise SystemExit(f"build.py: site.toml names a demo file src/ lacks: {path}")
+        shutil.copyfile(path, out / path.name)
+        built[key] = f"/assets/{path.name}"
+    with Image.open(SRC / demo["poster"]) as poster:
+        built["width"], built["height"] = poster.size
+    return built
+
+
+def _demo(demo: dict) -> str:
+    """The recording, framed like everything else the page shows.
+
+    ``preload="none"`` so the page costs nothing until someone asks for it -- the poster
+    is a still of the thing itself, which is the whole of what a visitor needs to decide.
+    """
+    return (
+        '<section class="block wide" aria-labelledby="demo">\n'
+        f'<h2 class="rule" id="demo">{esc(demo["title"])}</h2>\n'
+        '<figure class="demo">\n'
+        '<div class="hud">'
+        f'<video controls playsinline preload="none" poster="{demo["poster"]}"'
+        f' width="{demo["width"]}" height="{demo["height"]}">'
+        f'<source src="{demo["file"]}" type="video/mp4">'
+        "<p>Your browser will not play this. "
+        f'<a href="{demo["file"]}"{tracked("demo-download", "demo")}>Download the recording</a>.</p>'
+        "</video></div>\n"
+        f'<figcaption>{esc(demo["caption"])}</figcaption>\n'
+        "</figure>\n"
+        "</section>\n"
+    )
+
+
 def _screen(screen: dict) -> str:
     kind = " device" if screen.get("device") else ""
     title, caption = esc(screen["title"]), esc(screen["caption"])
@@ -514,7 +563,11 @@ def _button(link: dict, placement: str) -> str:
 
 
 def landing(
-    site: dict, facts: dict[str, str], sources: dict[str, str], screens: list[dict]
+    site: dict,
+    facts: dict[str, str],
+    sources: dict[str, str],
+    screens: list[dict],
+    demo: dict | None,
 ) -> str:
     """The front page: the splash, the one-liner, the buttons, the screens, the pages, the tip jar."""
     captures = "\n".join(_screen(s) for s in screens if not s.get("device"))
@@ -527,6 +580,7 @@ def landing(
         if screens
         else ""
     )
+    reel = _demo(demo) if demo else ""
     buttons = "\n".join(_button(link, "buttons") for link in site.get("primary", []))
     donate = "\n".join(_button(link, "donate") for link in site.get("donate", []))
     cards = "\n".join(
@@ -549,7 +603,7 @@ def landing(
 {buttons}
 </ul>
 </section>
-{gallery}<section class="block" aria-labelledby="read">
+{reel}{gallery}<section class="block" aria-labelledby="read">
 <h2 class="rule" id="read">About</h2>
 <ul class="cards">
 {cards}
@@ -597,6 +651,7 @@ def main(argv: list[str] | None = None) -> int:
     OUT.mkdir()
     build_art()
     screens = build_screens(site.get("screen", []), checkout / "docs" / "screenshots")
+    demo = build_demo(site["demo"]) if "demo" in site else None
     shutil.copyfile(SRC / "style.css", OUT / "style.css")
     # No trailing newline: GitHub writes the file that way whenever the custom domain is
     # saved in the repository settings, so matching it keeps a rebuild from diffing it.
@@ -611,7 +666,7 @@ def main(argv: list[str] | None = None) -> int:
             title=site["site"]["title"],
             path="/",
             description=site["site"]["description"],
-            body=landing(site, facts, sources, screens),
+            body=landing(site, facts, sources, screens, demo),
         ),
     )
     for stem, slug, title, _ in PAGES:

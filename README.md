@@ -43,6 +43,34 @@ label = "Mastodon"
 url = "https://mastodon.social/@example"
 ```
 
+## The demo recording
+
+`[demo]` in `site.toml` points at two files in `src/`, and `build.py` copies both into
+`docs/assets/` untouched. It never re-encodes: the mp4 is already H.264 High in
+`yuv420p` with its `moov` box ahead of the media, which is what lets a browser start
+playing before the whole file has arrived. Re-encoding would cost quality and put ffmpeg
+in the release build's way for nothing.
+
+The poster is a still lifted from the video, so the page shows the real thing before
+anyone presses play, and the video is loaded with `preload="none"` so it costs a visitor
+nothing until they ask for it. The frame never draws wider than the capture's own pixel
+width, because a terminal recording is text at one image pixel per screen pixel and
+scaling it up is exactly what turns that text to mush.
+
+To replace it, drop a new `demo.mp4` and `demo-poster.png` into `src/` and rebuild. To
+cut a fresh poster from a new recording:
+
+```bash
+ffmpeg -ss 30 -i src/demo.mp4 -frames:v 1 src/demo-poster.png
+```
+
+**GitHub is the one place this file cannot go.** The README on
+[MeshTerm](https://github.com/jpmartineau/MeshTerm) cannot play it from here: GitHub
+strips `<video>` out of markdown, and an mp4 behind an image link renders as a broken
+image. An inline player there needs a `user-attachments` URL, which means uploading the
+same file again through a comment box on that repo. This copy is the one the website
+plays and the one that is actually ours.
+
 ## Analytics
 
 Every page carries Cloudflare Web Analytics for page counts. For how visitors behave, fill in

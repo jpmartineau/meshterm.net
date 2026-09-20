@@ -66,6 +66,17 @@ label = "Patreon"
 url = "https://www.patreon.com/c/MeshTerm"
 color = "#ff424d"
 
+# The demo recording, shown under the buttons. Both files live in src/ and are copied
+# out verbatim: the mp4 is already H.264 in yuv420p with its moov box in front, which is
+# what lets a browser start playing it before the whole file has arrived. The poster is a
+# still from the video itself, so the page shows the real thing before anyone presses play.
+
+[demo]
+file = "demo.mp4"
+poster = "demo-poster.png"
+title = "Watch it"
+caption = "Under two minutes on a real mesh: pairing over Bluetooth, then every route one channel message took to arrive, a trace out and back across the city, a repeater administered over the air, and a packet read out of the live feed."
+
 # The screens on the landing page, in order, taken from MeshTerm's docs/screenshots/ (the
 # files the README shows). A terminal capture keeps its pixels and stays a PNG; one marked
 # `device = true` is a photo of the hardware, which leaves as a JPEG and takes the tall
