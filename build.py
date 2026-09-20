@@ -405,14 +405,6 @@ def _external(link: dict, placement: str, *, rel: str = "") -> str:
     )
 
 
-#: Microsoft Clarity's loader, as its setup page gives it.
-_CLARITY = """<script>
-(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window,document,"clarity","script",%s);
-</script>"""
-
 #: PostHog's loader, as its setup page gives it: a stub that queues calls until array.js
 #: arrives from the project's region.
 _POSTHOG = """<script>
@@ -422,15 +414,13 @@ posthog.init(%s,{api_host:%s,defaults:"2025-05-24",person_profiles:"identified_o
 
 
 def analytics(site: dict) -> str:
-    """The behaviour trackers ``[analytics]`` names, each only once its ID is filled in."""
+    """PostHog's loader, once ``[analytics]`` carries a project key — nothing until then."""
     config = site.get("analytics", {})
-    tags = []
-    if config.get("clarity"):
-        tags.append(_CLARITY % json.dumps(config["clarity"]))
-    if config.get("posthog_key"):
-        host = config.get("posthog_host") or "https://us.i.posthog.com"
-        tags.append(_POSTHOG % (json.dumps(config["posthog_key"]), json.dumps(host)))
-    return "".join(f"\n{tag}" for tag in tags)
+    key = config.get("posthog_key")
+    if not key:
+        return ""
+    host = config.get("posthog_host") or "https://us.i.posthog.com"
+    return "\n" + _POSTHOG % (json.dumps(key), json.dumps(host))
 
 
 def frame(site: dict, facts: dict[str, str], *, title: str, path: str, description: str, body: str) -> str:
