@@ -59,14 +59,33 @@ release is published, its `website` job checks out the tag and this repo, runs `
 and pushes `docs/` back here as a commit named after the version — nothing to do by hand.
 
 It pushes with a deploy key that can write to this repository and nothing else, made once
-(from Git Bash):
+**from Git Bash** — the third line feeds the private key in on stdin, and Windows
+PowerShell has no `<` redirection operator at all.
+
+Adding a deploy key needs a scope `gh` doesn't ask for by default, so do that first:
 
 ```bash
-ssh-keygen -t ed25519 -N "" -C "MeshTerm releases" -f ~/site_deploy_key
-gh repo deploy-key add ~/site_deploy_key.pub --repo jpmartineau/meshterm.net --title "MeshTerm releases" --allow-write
-gh secret set SITE_DEPLOY_KEY --repo jpmartineau/MeshTerm < ~/site_deploy_key
-rm ~/site_deploy_key ~/site_deploy_key.pub
+gh auth refresh -h github.com -s admin:public_key
 ```
+
+Then the key itself. The steps are chained on `&&` on purpose: **nothing is deleted
+unless everything before it worked.**
+
+```bash
+rm -f ~/site_deploy_key ~/site_deploy_key.pub
+ssh-keygen -t ed25519 -N "" -C "MeshTerm releases" -f ~/site_deploy_key \
+  && gh repo deploy-key add ~/site_deploy_key.pub --repo jpmartineau/meshterm.net --title "MeshTerm releases" --allow-write \
+  && gh secret set SITE_DEPLOY_KEY --repo jpmartineau/MeshTerm < ~/site_deploy_key \
+  && echo "BOTH HALVES INSTALLED" \
+  && rm ~/site_deploy_key ~/site_deploy_key.pub
+```
+
+Run as four separate lines, this fails badly rather than loudly: if `deploy-key add` is
+refused, the two lines after it still run, and you end up with a secret holding a private
+key whose public half was never installed — and no local copy of either. That fails
+*authentication* on the next release, which reads like a broken key rather than a missing
+one. Check both ends with `gh repo deploy-key list --repo jpmartineau/meshterm.net` and
+`gh secret list --repo jpmartineau/MeshTerm`.
 
 ## A link that isn't open yet
 
