@@ -3,7 +3,7 @@
 The landing page for [MeshTerm](https://github.com/jpmartineau/MeshTerm), served by GitHub
 Pages from `docs/`.
 
-`docs/` is **generated** — never edit it by hand. `build.py` writes it from three sources:
+`docs/` is **generated** — never edit it by hand. `build.py` writes it from four sources:
 
 | Source | What it holds |
 |---|---|
@@ -23,6 +23,15 @@ From this folder, with MeshTerm's virtualenv (it already has every dependency):
 Rebuild after editing anything above — including an About page in MeshTerm, and after a
 release, since the version appears on the landing and About pages — then commit `docs/`
 with its sources and push. Pages redeploys on its own within a minute or two.
+
+A build on Windows writes the six derived images (`favicon.ico`, `apple-touch-icon.png`,
+`logo-96.png`, `og.png`, `social-preview.png`, `splash.png`) with slightly different bytes
+from the ones CI makes, even though they look the same. If you only changed words, restore
+them before committing so the commit holds only the pages:
+
+```powershell
+git restore docs/favicon.ico docs/assets/apple-touch-icon.png docs/assets/logo-96.png docs/assets/og.png docs/assets/social-preview.png docs/assets/splash.png
+```
 
 To look before pushing (links are root-relative, so opening the files directly won't work):
 
@@ -98,7 +107,12 @@ Every page carries Cloudflare Web Analytics for page counts. For how visitors be
 
 Pushing a MeshTerm version tag runs `github-release.yml` in the MeshTerm repo. Once the
 release is published, its `website` job checks out the tag and this repo, runs `build.py`,
-and pushes `docs/` back here as a commit named after the version — nothing to do by hand.
+and pushes `docs/` back here as a commit named after the version. A prerelease skips this
+job.
+
+The job builds from the tag, so it uses the About, Author and Support pages as they were
+when the tag was made. If those pages have changed on MeshTerm's `main` since, rebuild by
+hand instead.
 
 It pushes with a deploy key that can write to this repository and nothing else, made once
 **from Git Bash** — the third line feeds the private key in on stdin, and Windows
@@ -110,8 +124,9 @@ Adding a deploy key needs a scope `gh` doesn't ask for by default, so do that fi
 gh auth refresh -h github.com -s admin:public_key
 ```
 
-Then the key itself. The steps are chained on `&&` on purpose: **nothing is deleted
-unless everything before it worked.**
+Then the key itself. The first line clears out any key left over from an earlier attempt.
+The rest are chained on `&&` on purpose: **the new key is deleted only if everything
+before it worked.**
 
 ```bash
 rm -f ~/site_deploy_key ~/site_deploy_key.pub
@@ -134,8 +149,27 @@ one. Check both ends with `gh repo deploy-key list --repo jpmartineau/meshterm.n
 A `site.toml` link with `opens = "22 September"` is asked at every build whether it answers
 a logged-out visitor. While it answers 404 (a private repository does), its button shows
 *Opens 22 September* and links nowhere, the top bar and footer leave it out, and the pages
-spell its address out unlinked. The first build after it opens links it everywhere — a
-release build, or a manual one — so launch day needs no edit; delete the line afterwards.
+spell its address out unlinked. The first build after it opens links it everywhere.
+
+Nothing runs that build for you. The v0.9.0 release has already rebuilt the site, while
+the repository was still private, so after the repository goes public, rebuild by hand:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://github.com/jpmartineau/MeshTerm   # must print 200
+cd /d/vibe/meshterm.net && git pull --ff-only
+../MeshTerm/.venv/Scripts/python build.py     # must not print "waiting on"
+git status --short                            # the five pages, plus images to restore (see Rebuild)
+git add docs && git commit -m "GitHub is open" && git push
+```
+
+Then delete the `opens` line from `site.toml`, rebuild (nothing in `docs/` should change),
+and commit. Pages caches for up to ten minutes, so give it that long before checking the
+live site.
+
+Re-running the release's `website` job would also work, but it builds the pages from the
+`v0.9.0` tag and so would undo any fixes made to them on `main` since. Don't use
+`workflow_dispatch` on `github-release.yml` for this either: it tries to create the release
+again, fails, and never reaches the `website` job.
 
 ## Hosting
 
