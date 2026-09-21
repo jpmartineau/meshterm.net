@@ -99,7 +99,8 @@ while pixel art is still pixel art.
 Every page carries Cloudflare Web Analytics for page counts. For how visitors behave, fill in
 `[analytics]` in `site.toml` and rebuild. An empty key stays out of the pages.
 
-- **PostHog** (`posthog_key`, `posthog_host`): events, funnels, recordings. The project API
+- **PostHog** (`posthog_key`, `posthog_host`): events and funnels. Session recording is
+  switched off in the page itself, whatever the project settings say. The project API
   key (`phc_…`) is under Project settings; set the host to `https://eu.i.posthog.com` for an
   EU project.
 
