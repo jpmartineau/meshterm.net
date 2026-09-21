@@ -7,8 +7,8 @@
 
 [site]
 url = "https://meshterm.net"
-title = "MeshTerm — a MeshCore client for your terminal"
-description = "MeshTerm is a full-featured MeshCore client that lives in your terminal. Connect your device over USB, Bluetooth, or TCP. For Windows, macOS, and Linux. Free and open-source."
+title = "MeshTerm — a full-featured TUI MeshCore client for your terminal"
+description = "MeshTerm is a full-featured TUI MeshCore client for your terminal. Connect your device over USB, Bluetooth, or TCP. For Windows, macOS, and Linux. Free and open-source."
 
 # Behaviour analytics, beside the Cloudflare page counts every page already carries. It
 # is left out of the pages while its key is empty.
