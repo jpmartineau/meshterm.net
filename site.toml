@@ -63,7 +63,7 @@ color = "#009cde"
 
 [[donate]]
 label = "Patreon"
-url = "https://www.patreon.com/c/MeshTerm"
+url = "https://www.patreon.com/cw/MeshTerm"
 color = "#ff424d"
 
 # The demo recording, shown under the buttons. Both files live in src/ and are copied
