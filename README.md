@@ -73,12 +73,13 @@ cut a fresh poster from a new recording:
 ffmpeg -ss 30 -i src/demo.mp4 -frames:v 1 src/demo-poster.png
 ```
 
-**GitHub is the one place this file cannot go.** The README on
-[MeshTerm](https://github.com/jpmartineau/MeshTerm) cannot play it from here: GitHub
-strips `<video>` out of markdown, and an mp4 behind an image link renders as a broken
-image. An inline player there needs a `user-attachments` URL, which means uploading the
-same file again through a comment box on that repo. This copy is the one the website
-plays and the one that is actually ours.
+**The README on [MeshTerm](https://github.com/jpmartineau/MeshTerm) plays a separate
+upload of the same file.** GitHub strips `<video>` out of markdown and will only play a
+file uploaded to GitHub itself, so the recording was dropped into an issue comment box on
+that repo (and the issue never posted) to get a `user-attachments` URL. The README
+carries that URL on a line of its own, which GitHub turns into a player, for logged-out
+visitors too. A new recording means uploading it there again and swapping the URL. The
+copy in `src/` is the one the website plays and the one that is actually ours.
 
 ## The repository's social preview
 
