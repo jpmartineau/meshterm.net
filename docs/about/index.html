@@ -55,7 +55,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <h2 id="platform-specific-developments">Platform-specific developments</h2>
 <p>In addition to a generic terminal setup, I wanted it to run on two devices I had lying around in my nerdcave.</p>
 <h3 id="clockworkpi-uconsole">ClockworkPi uConsole</h3>
-<p>MeshTerm is compatible with the <strong>HackerGadgets AIO board (v1 or v2)</strong>. The <strong>AIO</strong> board has just a raw LoRa radio, meaning it can't run MeshCore firmware. MeshTerm includes a script to run the mesh node in software, and expose it using a TCP port which MeshTerm can connect to.</p>
+<p>MeshTerm is compatible with the <strong>HackerGadgets AIO board (v1 or v2)</strong>. The <strong>AIO</strong> board has just a raw LoRa radio, meaning it can't run MeshCore firmware. MeshTerm can run the mesh node in software itself, straight over the board's SPI bus, for as long as MeshTerm is running — no separate service needed. If you'd rather the node stayed on the mesh while MeshTerm is closed, an optional bridge service can run it all the time instead.</p>
 <p>MeshTerm feels right at home on the <strong>uConsole</strong>. Running MeshTerm on it makes it feel like a piece of gear straight out of a William Gibson novel.</p>
 <h3 id="clockworkpi-picocalc">ClockworkPi PicoCalc</h3>
 <p>Getting MeshTerm to run on the <strong>PicoCalc</strong> is a bit more involved, but totally worth it:</p>
@@ -87,7 +87,7 @@ author — a fork that keeps soliciting through it, without pointing it at
 itself, isn't affiliated with MeshTerm.</p>
 <p>Built on <a href="https://meshcore.io/"><strong>MeshCore</strong></a> — its firmware and companion
 library — with Rich, prompt_toolkit, Typer, bleak, pyserial, pycryptodome,
-markdown-it-py, tomli/tomli-w and Segno, each under its own terms.</p>
+markdown-it-py, tomli/tomli-w, and Segno, each under its own terms.</p>
 <p>Map data <strong>© OpenStreetMap contributors</strong>, served as vector tiles by
 <a href="https://openfreemap.org/"><strong>OpenFreeMap</strong></a> on the <strong>© OpenMapTiles</strong> schema
 <a href="https://openmaptiles.org/">openmaptiles.org</a>, used under the <strong>ODbL</strong>
