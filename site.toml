@@ -62,6 +62,14 @@ label = "Patreon"
 url = "https://www.patreon.com/cw/MeshTerm"
 color = "#ff424d"
 
+# Small print after the copyright line, at the foot of every page. The code signing policy
+# lives in MeshTerm's README, beside the downloads it covers, and SignPath Foundation (who
+# sign the Windows build) ask for it to be reachable from the homepage too.
+
+[[fine_print]]
+label = "Code signing policy"
+url = "https://github.com/jpmartineau/MeshTerm#code-signing-policy"
+
 # The demo recording, shown under the buttons. Both files live in src/ and are copied
 # out verbatim: the mp4 is already H.264 in yuv420p with its moov box in front, which is
 # what lets a browser start playing it before the whole file has arrived. The poster is a

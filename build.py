@@ -503,6 +503,13 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
             + [_external(link, placement, rel="me") for link in socials]
         )
 
+    # The footer's small print rides the copyright line rather than joining the links
+    # beside it: those are places to go, and these are statements about the project.
+    fine_print = "".join(
+        f' · <a href="{esc(link["url"])}"{tracked(link_name(link), "footer")}>{esc(link["label"])}</a>'
+        for link in site.get("fine_print", [])
+    )
+
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -542,7 +549,7 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 {body}
 </main>
 <footer class="site-foot">
-<p>{esc(facts["{copyright}"])}</p>
+<p>{esc(facts["{copyright}"])}{fine_print}</p>
 <ul>
 {outside("footer")}
 </ul>
