@@ -483,8 +483,90 @@ def analytics(site: dict) -> str:
     return "\n" + _POSTHOG % (json.dumps(key), json.dumps(host))
 
 
-def frame(site: dict, facts: dict[str, str], *, title: str, path: str, description: str, body: str) -> str:
-    """Wrap ``body`` in the page every URL shares: head, top bar, footer."""
+def repository(site: dict) -> str:
+    """The GitHub address of MeshTerm itself, taken from the landing page's own button."""
+    for link in site.get("primary", []):
+        if urlparse(link["url"]).hostname == "github.com":
+            return link["url"].rstrip("/")
+    raise SystemExit("site.toml: no [[primary]] link points at GitHub")
+
+
+def structured_data(site: dict, facts: dict[str, str]) -> str:
+    """The landing page's description of MeshTerm for search engines, as JSON-LD.
+
+    Two things are said. The site is called MeshTerm, which is the name Google prints
+    above a result instead of the bare domain. And MeshTerm is free software for three
+    systems, with a download and a repository, which is how a search engine learns that
+    "MeshTerm" here is an app and not the medical *MeSH term* it otherwise assumes.
+    Nothing is claimed that the page doesn't show: no ratings, no review counts.
+    """
+    base = site["site"]["url"].rstrip("/")
+    repo = repository(site)
+    graph = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {"@type": "WebSite", "name": "MeshTerm", "url": f"{base}/"},
+            {
+                "@type": "SoftwareApplication",
+                "name": "MeshTerm",
+                "description": site["site"]["description"],
+                "url": f"{base}/",
+                "image": f"{base}/assets/og.png",
+                "applicationCategory": "CommunicationApplication",
+                "applicationSubCategory": "MeshCore client",
+                "operatingSystem": "Windows, macOS, Linux",
+                "softwareVersion": facts["{version}"],
+                "license": "https://www.apache.org/licenses/LICENSE-2.0",
+                "isAccessibleForFree": True,
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "downloadUrl": f"{repo}/releases/latest",
+                "sameAs": [repo],
+                "author": {"@type": "Person", "name": facts["{author}"], "url": f"{base}/author/"},
+            },
+        ],
+    }
+    # "</" can't appear inside a <script> element, and JSON lets it be written "<\/".
+    text = json.dumps(graph, ensure_ascii=False, indent=1).replace("</", "<\\/")
+    return f'\n<script type="application/ld+json">\n{text}\n</script>'
+
+
+def robots(site: dict) -> str:
+    """Every crawler may read everything; the sitemap says what there is to read."""
+    base = site["site"]["url"].rstrip("/")
+    return f"User-agent: *\nAllow: /\n\nSitemap: {base}/sitemap.xml\n"
+
+
+def sitemap(site: dict) -> str:
+    """The site's pages for search engines: the landing page and each written page.
+
+    No ``lastmod``: every release rebuilds every page, so a date would only ever say
+    "today" and teach Google to ignore it.
+    """
+    base = site["site"]["url"].rstrip("/")
+    paths = ["/"] + [f"/{slug}/" for _, slug, _, _ in PAGES]
+    urls = "\n".join(f"  <url><loc>{esc(base + path)}</loc></url>" for path in paths)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n"
+        "</urlset>\n"
+    )
+
+
+def frame(
+    site: dict,
+    facts: dict[str, str],
+    *,
+    title: str,
+    path: str,
+    description: str,
+    body: str,
+    head: str = "",
+) -> str:
+    """Wrap ``body`` in the page every URL shares: head, top bar, footer.
+
+    ``head`` is extra markup for the end of ``<head>``, for the one page that needs it.
+    """
     base = site["site"]["url"].rstrip("/")
     if path != "/" and "MeshTerm" not in title:
         title = f"{title} · MeshTerm"
@@ -532,7 +614,7 @@ def frame(site: dict, facts: dict[str, str], *, title: str, path: str, descripti
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "3122778111a44031ab688d821934c7ae"}}'></script><!-- End Cloudflare Web Analytics -->{analytics(site)}
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "3122778111a44031ab688d821934c7ae"}}'></script><!-- End Cloudflare Web Analytics -->{analytics(site)}{head}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -675,6 +757,8 @@ def main(argv: list[str] | None = None) -> int:
     # saved in the repository settings, so matching it keeps a rebuild from diffing it.
     write(OUT / "CNAME", urlparse(site["site"]["url"]).hostname)
     write(OUT / ".nojekyll", "")
+    write(OUT / "robots.txt", robots(site))
+    write(OUT / "sitemap.xml", sitemap(site))
 
     write(
         OUT / "index.html",
@@ -685,6 +769,7 @@ def main(argv: list[str] | None = None) -> int:
             path="/",
             description=site["site"]["description"],
             body=landing(site, facts, sources, screens, demo),
+            head=structured_data(site, facts),
         ),
     )
     for stem, slug, title, _ in PAGES:
