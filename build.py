@@ -296,7 +296,9 @@ def build_screens(screens: list[dict], source: Path) -> list[dict]:
     A terminal capture is text at one image pixel per screen pixel, so it keeps its size
     and stays a PNG — the very file, when nothing in it is transparent, since re-encoding
     only makes it bigger. A device photo carries a camera's worth of detail nobody needs at
-    page size, so it leaves as a JPEG no wider than :data:`DEVICE_WIDTH`.
+    page size, so it leaves as a JPEG no wider than :data:`DEVICE_WIDTH`. A device entry
+    marked ``capture`` is the handheld's own display rather than a photo of it: it stands
+    in the device column, but its pixels are a capture's, so it is treated as one.
 
     Returns:
         Each screen's ``site.toml`` entry plus where the page finds it and its size.
@@ -311,7 +313,8 @@ def build_screens(screens: list[dict], source: Path) -> list[dict]:
         image = Image.open(path)
         stem = Path(screen["file"]).stem
         opaque = "A" not in image.getbands() or image.getchannel("A").getextrema()[0] == 255
-        if not screen.get("device") and path.suffix.lower() == ".png" and opaque:
+        photo = screen.get("device") and not screen.get("capture")
+        if not photo and path.suffix.lower() == ".png" and opaque:
             shutil.copyfile(path, out / f"{stem}.png")
             built.append(
                 {**screen, "src": f"/assets/screens/{stem}.png", "width": image.width, "height": image.height}
@@ -323,7 +326,7 @@ def build_screens(screens: list[dict], source: Path) -> list[dict]:
             image.paste(rgba, mask=rgba.getchannel("A"))
         else:
             image = image.convert("RGB")
-        if screen.get("device"):
+        if photo:
             if image.width > DEVICE_WIDTH:
                 height = round(image.height * DEVICE_WIDTH / image.width)
                 image = image.resize((DEVICE_WIDTH, height), Image.LANCZOS)
@@ -675,7 +678,8 @@ def landing(
     gallery = (
         '<section class="block wide" aria-labelledby="screens">\n'
         '<h2 class="rule" id="screens">Screens</h2>\n'
-        f'<div class="screens">\n<div class="captures">\n{captures}\n</div>\n{devices}\n</div>\n'
+        f'<div class="screens">\n<div class="captures">\n{captures}\n</div>\n'
+        f'<div class="devices">\n{devices}\n</div>\n</div>\n'
         "</section>\n"
         if screens
         else ""

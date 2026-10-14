@@ -88,8 +88,9 @@ caption = "Under two minutes on a real mesh: pairing over Bluetooth, then every 
 
 # The screens on the landing page, in order, taken from MeshTerm's docs/screenshots/ (the
 # files the README shows). A terminal capture keeps its pixels and stays a PNG; one marked
-# `device = true` is a photo of the hardware, which leaves as a JPEG and takes the tall
-# slot beside the captures.
+# `device = true` is a photo of the hardware, which leaves as a JPEG and goes in the column
+# beside the captures. A device entry that is a capture of the handheld's own display, not
+# a photo, adds `capture = true`: it shares that column but keeps its pixels as a PNG.
 
 [[screen]]
 file = "dashboard.png"
@@ -116,6 +117,13 @@ file = "picocalc.png"
 title = "PicoCalc"
 caption = "A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in."
 device = true
+
+[[screen]]
+file = "cardputer-zero.png"
+title = "Cardputer Zero"
+caption = "Straight from M5Stack's app store, on the Cardputer Zero or the Zero Lite. Add the Cap LoRa-1262 and MeshTerm is the node."
+device = true
+capture = true
 
 # Socials land in the top bar and the footer, marked rel="me" so a profile that checks
 # for a link back (Mastodon, Bluesky) can verify the site. None yet — uncomment to add:

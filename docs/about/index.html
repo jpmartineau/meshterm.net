@@ -53,7 +53,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <p>The project had humble beginnings as a set of scripts in early 2026. As time passed, quality-of-life features were added, and at some point, the logical next step was to build a complete MeshCore client with all the features I felt were missing in other offerings.</p>
 <p>I wanted something I could run from my computer. I wanted it to run on Windows, macOS, and Linux, and I wanted it to work with any MeshCore companion device, via Bluetooth, USB, or TCP. I wanted a mouseless keyboard-driven MeshCore experience. I wanted something retro-futuristic. I wanted to push the envelope of what can be done on a text terminal, while keeping system requirements low so it could run on an older computer or a lower-end System on a Chip <em>(SoC)</em>.</p>
 <h2 id="platform-specific-developments">Platform-specific developments</h2>
-<p>In addition to a generic terminal setup, I wanted it to run on two devices I had lying around in my nerdcave.</p>
+<p>In addition to a generic terminal setup, I wanted it to run on two devices I had lying around in my nerdcave. Then a third one showed up.</p>
 <h3 id="clockworkpi-uconsole">ClockworkPi uConsole</h3>
 <p>MeshTerm is compatible with the <strong>HackerGadgets AIO board (v1 or v2)</strong>. The <strong>AIO</strong> board has just a raw LoRa radio, meaning it can't run MeshCore firmware. MeshTerm can run the mesh node in software itself, straight over the board's SPI bus, for as long as MeshTerm is running — no separate service needed. If you'd rather the node stayed on the mesh while MeshTerm is closed, an optional bridge service can run it all the time instead.</p>
 <p>MeshTerm feels right at home on the <strong>uConsole</strong>. Running MeshTerm on it makes it feel like a piece of gear straight out of a William Gibson novel.</p>
@@ -71,6 +71,14 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <li>In order to use the XIAO nRF52840 via GPIO, a modified firmware is needed. A <a href="https://github.com/meshcore-dev/MeshCore/pull/3191"><strong>PR</strong></a> has been submitted to MeshCore, but it might take a while for it to go through.</li>
 </ul>
 <p>The UX is a bit different on the PicoCalc's 16-colour 53-column screen layout, but it's been tailored to make good use of the available space and the PicoCalc's F-keys. The result is, in my humble opinion, the best MeshCore experience you can get on a portable device. It runs on one 18650 battery, and a second one roughly doubles the runtime.</p>
+<h3 id="m5stack-cardputer-zero">M5Stack Cardputer Zero</h3>
+<p>The <strong>Cardputer Zero</strong> is the easiest of the three: MeshTerm is in <strong>M5Stack</strong>'s app store, so installing it takes a few keypresses. Both models work, the standard <strong>Cardputer Zero</strong> and the <strong>Cardputer Zero Lite</strong>.</p>
+<ul>
+<li>Add the <strong>Cap LoRa-1262</strong>, and MeshTerm runs the mesh node itself, straight over SPI, just like on the uConsole. The Cap's GPS works too.</li>
+<li>Power the Cardputer off before you plug in or remove a Cap — the LoRa one included. M5Stack doesn't support hot-swapping Caps, and says it may cause the device to malfunction.</li>
+<li>Put the antenna on the Cap before you power it on. M5Stack warns that the radio can be permanently damaged without it.</li>
+</ul>
+<p>The screen is tiny — 53 columns by 14 rows — so MeshTerm draws every pixel itself, and every screen has been squeezed to fit. The F-key labels run along the bottom of the screen, right above the number keys that press them. It's a mesh terminal that fits in your pocket!</p>
 <h2 id="what-the-future-holds">What the future holds</h2>
 <p>MeshTerm will evolve over time. It is a work in progress.</p>
 <p>I've built MeshTerm for myself — I find that's when I produce my best work — but I sincerely hope it will be appreciated by others.</p>

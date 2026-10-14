@@ -548,9 +548,15 @@ a:hover {
 }
 
 .screens,
-.captures {
+.captures,
+.devices {
   display: grid;
   gap: 1.5rem;
+}
+
+/* The handhelds, one under the other, in the column beside the captures. */
+.devices {
+  align-content: start;
 }
 
 @media (min-width: 720px) {
@@ -559,7 +565,7 @@ a:hover {
   }
 }
 
-/* The captures two by two, and the device photo standing beside them. */
+/* The captures two by two, and the handhelds standing beside them. */
 @media (min-width: 1000px) {
   .screens {
     grid-template-columns: 2fr 1fr;
