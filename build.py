@@ -290,8 +290,13 @@ def build_art() -> None:
 DEVICE_WIDTH = 900
 
 
-def build_screens(screens: list[dict], source: Path) -> list[dict]:
+def build_screens(screens: list[dict], source: Path, sets: list[dict] | None = None) -> list[dict]:
     """Copy the landing page's screens out of MeshTerm's ``docs/screenshots``.
+
+    With ``sets``, each capture (an entry that is not a device) is one screen shown on
+    several platforms: its file is read from every set's folder, and the entry comes back
+    with a ``variants`` list -- one image per set, in the order of the sets, the first being
+    the one the page opens on.
 
     A terminal capture is text at one image pixel per screen pixel, so it keeps its size
     and stays a PNG — the very file, when nothing in it is transparent, since re-encoding
@@ -307,6 +312,21 @@ def build_screens(screens: list[dict], source: Path) -> list[dict]:
     out.mkdir(parents=True, exist_ok=True)
     built = []
     for screen in screens:
+        if sets and not screen.get("device"):
+            variants = []
+            for group in sets:
+                path = source / group["dir"] / screen["file"]
+                if not path.is_file():
+                    raise SystemExit(f"build.py: the {group['label']} set lacks a screen: {path}")
+                name = f"{group['dir']}-{Path(screen['file']).stem}.png"
+                with Image.open(path) as image:
+                    width, height = image.size
+                shutil.copyfile(path, out / name)
+                variants.append(
+                    {"set": group["dir"], "src": f"/assets/screens/{name}", "width": width, "height": height}
+                )
+            built.append({**screen, "variants": variants})
+            continue
         path = source / screen["file"]
         if not path.is_file():
             raise SystemExit(f"build.py: site.toml names a screen MeshTerm doesn't have: {path}")
@@ -390,16 +410,85 @@ def _demo(demo: dict) -> str:
     )
 
 
-def _screen(screen: dict) -> str:
+def _screen(screen: dict, variant: dict | None = None, first: bool = True) -> str:
+    """One screen as a figure: the entry itself, or one of its ``variants``.
+
+    A variant other than the first set's is tracked under the set's name too, so the
+    clicks on the default set keep the names their charts already count.
+    """
     kind = " device" if screen.get("device") else ""
     title, caption = esc(screen["title"]), esc(screen["caption"])
+    name = "screen-" + slug(screen["title"])
+    if variant is not None:
+        screen = {**screen, **variant}
+        if not first:
+            name += "-" + variant["set"]
     return (
         f'<figure class="screen{kind}">'
-        f'<a class="hud" href="{screen["src"]}"{tracked("screen-" + slug(screen["title"]), "screens")} data-full data-caption="{title} — {caption}">'
+        f'<a class="hud" href="{screen["src"]}"{tracked(name, "screens")} data-full data-caption="{title} — {caption}">'
         f'<img src="{screen["src"]}" width="{screen["width"]}" height="{screen["height"]}"'
         f' loading="lazy" alt="{title} screenshot"></a>'
         f'<figcaption><span class="screen-title">{title}</span> {caption}</figcaption></figure>'
     )
+
+
+def _captures(sets: list[dict], captures: list[dict]) -> str:
+    """The captures column: one panel per set behind a row of tabs, or one plain panel.
+
+    Every panel is in the page, so a visitor without JavaScript still gets the first set,
+    and the tabs (hidden until the script shows them) only switch which panel is visible.
+    Images in a hidden panel are lazy, so a set costs nothing until someone opens it.
+    """
+    if not sets:
+        return '<div class="captures">\n' + "\n".join(_screen(s) for s in captures) + "\n</div>"
+    tabs = "".join(
+        f'<button type="button" role="tab" id="set-tab-{group["dir"]}" aria-controls="set-{group["dir"]}"'
+        f' aria-selected="{"true" if index == 0 else "false"}" tabindex="{0 if index == 0 else -1}"'
+        f'{tracked("screens-" + group["dir"], "screens")}>{esc(group["label"])}</button>'
+        for index, group in enumerate(sets)
+    )
+    panels = "\n".join(
+        f'<div class="captures" role="tabpanel" id="set-{group["dir"]}" aria-labelledby="set-tab-{group["dir"]}"'
+        f'{"" if index == 0 else " hidden"}>\n'
+        + "\n".join(_screen(s, s["variants"][index], index == 0) for s in captures)
+        + "\n</div>"
+        for index, group in enumerate(sets)
+    )
+    return (
+        '<div class="screen-sets">\n'
+        f'<div class="set-tabs" role="tablist" aria-label="Show the screens on" hidden>{tabs}</div>\n'
+        f"{panels}\n</div>"
+    )
+
+
+#: The tabs of the screen sets: a click (or the left and right arrows on a focused tab, as
+#: a tab list does) shows that set's panel and hides the others.
+SETS = """<script>
+(() => {
+  const list = document.querySelector(".set-tabs");
+  if (!list) return;
+  const tabs = [...list.querySelectorAll("[role=tab]")];
+  const show = (tab) => {
+    for (const other of tabs) {
+      const on = other === tab;
+      other.setAttribute("aria-selected", on);
+      other.tabIndex = on ? 0 : -1;
+      document.getElementById(other.getAttribute("aria-controls")).hidden = !on;
+    }
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => show(tab));
+    tab.addEventListener("keydown", (event) => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+      if (!step) return;
+      const next = tabs[Math.min(tabs.length - 1, Math.max(0, index + step))];
+      show(next);
+      next.focus();
+    });
+  });
+  list.hidden = false;
+})();
+</script>"""
 
 
 #: The full-size view: a ``<dialog>`` over the dimmed page, closed with Esc like everything
@@ -673,12 +762,12 @@ def landing(
     demo: dict | None,
 ) -> str:
     """The front page: the splash, the one-liner, the buttons, the screens, the pages, the tip jar."""
-    captures = "\n".join(_screen(s) for s in screens if not s.get("device"))
+    captures = _captures(site.get("screen_set", []), [s for s in screens if not s.get("device")])
     devices = "\n".join(_screen(s) for s in screens if s.get("device"))
     gallery = (
         '<section class="block wide" aria-labelledby="screens">\n'
         '<h2 class="rule" id="screens">Screens</h2>\n'
-        f'<div class="screens">\n<div class="captures">\n{captures}\n</div>\n'
+        f'<div class="screens">\n{captures}\n'
         f'<div class="devices">\n{devices}\n</div>\n</div>\n'
         "</section>\n"
         if screens
@@ -720,7 +809,7 @@ def landing(
 {donate}
 </ul>
 </section>
-{VIEWER if screens else ""}"""
+{VIEWER if screens else ""}{SETS if site.get("screen_set") and screens else ""}"""
 
 
 def write(path: Path, text: str) -> None:
@@ -754,7 +843,9 @@ def main(argv: list[str] | None = None) -> int:
         shutil.rmtree(OUT)
     OUT.mkdir()
     build_art()
-    screens = build_screens(site.get("screen", []), checkout / "docs" / "screenshots")
+    screens = build_screens(
+        site.get("screen", []), checkout / "docs" / "screenshots", site.get("screen_set")
+    )
     demo = build_demo(site["demo"]) if "demo" in site else None
     shutil.copyfile(SRC / "style.css", OUT / "style.css")
     # No trailing newline: GitHub writes the file that way whenever the custom domain is

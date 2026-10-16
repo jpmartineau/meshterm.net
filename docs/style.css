@@ -573,6 +573,44 @@ a:hover {
   }
 }
 
+/* The screen sets: one row of tabs over the captures, one panel per platform. */
+.screen-sets {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.set-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.set-tabs[hidden],
+.captures[hidden] {
+  display: none;
+}
+
+.set-tabs button {
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.set-tabs button:hover {
+  color: var(--bright);
+}
+
+.set-tabs button[aria-selected="true"] {
+  border-color: var(--cyan-hi);
+  color: var(--bright);
+  box-shadow: 0 0 0.6rem -0.1rem rgba(97, 214, 214, 0.6);
+}
+
 .screen {
   display: grid;
   align-content: start;

@@ -106,11 +106,26 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <section class="block wide" aria-labelledby="screens">
 <h2 class="rule" id="screens">Screens</h2>
 <div class="screens">
-<div class="captures">
-<figure class="screen"><a class="hud" href="/assets/screens/dashboard.png" data-ph-capture-attribute-button="screen-dashboard" data-ph-capture-attribute-placement="screens" data-full data-caption="Dashboard — See how busy the mesh is, minute by minute."><img src="/assets/screens/dashboard.png" width="653" height="586" loading="lazy" alt="Dashboard screenshot"></a><figcaption><span class="screen-title">Dashboard</span> See how busy the mesh is, minute by minute.</figcaption></figure>
-<figure class="screen"><a class="hud" href="/assets/screens/map.png" data-ph-capture-attribute-button="screen-map" data-ph-capture-attribute-placement="screens" data-full data-caption="Map — Explore the nodes around you on the map."><img src="/assets/screens/map.png" width="653" height="586" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Explore the nodes around you on the map.</figcaption></figure>
-<figure class="screen"><a class="hud" href="/assets/screens/trace.png" data-ph-capture-attribute-button="screen-trace" data-ph-capture-attribute-placement="screens" data-full data-caption="Trace — Trace a route hop by hop and see the signal strength at every step."><img src="/assets/screens/trace.png" width="734" height="586" loading="lazy" alt="Trace screenshot"></a><figcaption><span class="screen-title">Trace</span> Trace a route hop by hop and see the signal strength at every step.</figcaption></figure>
-<figure class="screen"><a class="hud" href="/assets/screens/path.png" data-ph-capture-attribute-button="screen-message-paths" data-ph-capture-attribute-placement="screens" data-full data-caption="Message paths — Visualize every path a message took to reach you."><img src="/assets/screens/path.png" width="734" height="586" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Visualize every path a message took to reach you.</figcaption></figure>
+<div class="screen-sets">
+<div class="set-tabs" role="tablist" aria-label="Show the screens on" hidden><button type="button" role="tab" id="set-tab-terminal" aria-controls="set-terminal" aria-selected="true" tabindex="0" data-ph-capture-attribute-button="screens-terminal" data-ph-capture-attribute-placement="screens">Terminal</button><button type="button" role="tab" id="set-tab-cardputer-zero" aria-controls="set-cardputer-zero" aria-selected="false" tabindex="-1" data-ph-capture-attribute-button="screens-cardputer-zero" data-ph-capture-attribute-placement="screens">Cardputer Zero</button><button type="button" role="tab" id="set-tab-picocalc-lyra" aria-controls="set-picocalc-lyra" aria-selected="false" tabindex="-1" data-ph-capture-attribute-button="screens-picocalc-lyra" data-ph-capture-attribute-placement="screens">PicoCalc</button></div>
+<div class="captures" role="tabpanel" id="set-terminal" aria-labelledby="set-tab-terminal">
+<figure class="screen"><a class="hud" href="/assets/screens/terminal-menu.png" data-ph-capture-attribute-button="screen-main-menu" data-ph-capture-attribute-placement="screens" data-full data-caption="Main menu — Every tool in one menu: chat, watch the mesh, explore it, and set up your node."><img src="/assets/screens/terminal-menu.png" width="1476" height="900" loading="lazy" alt="Main menu screenshot"></a><figcaption><span class="screen-title">Main menu</span> Every tool in one menu: chat, watch the mesh, explore it, and set up your node.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/terminal-chat.png" data-ph-capture-attribute-button="screen-chat" data-ph-capture-attribute-placement="screens" data-full data-caption="Chat — Talk on channels, in rooms, and one to one, with every sender in a colour of their own."><img src="/assets/screens/terminal-chat.png" width="1476" height="900" loading="lazy" alt="Chat screenshot"></a><figcaption><span class="screen-title">Chat</span> Talk on channels, in rooms, and one to one, with every sender in a colour of their own.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/terminal-paths.png" data-ph-capture-attribute-button="screen-message-paths" data-ph-capture-attribute-placement="screens" data-full data-caption="Message paths — Visualize every path a message took to reach you."><img src="/assets/screens/terminal-paths.png" width="1476" height="900" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Visualize every path a message took to reach you.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/terminal-map.png" data-ph-capture-attribute-button="screen-map" data-ph-capture-attribute-placement="screens" data-full data-caption="Map — Explore the nodes around you on the map."><img src="/assets/screens/terminal-map.png" width="1476" height="900" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Explore the nodes around you on the map.</figcaption></figure>
+</div>
+<div class="captures" role="tabpanel" id="set-cardputer-zero" aria-labelledby="set-tab-cardputer-zero" hidden>
+<figure class="screen"><a class="hud" href="/assets/screens/cardputer-zero-menu.png" data-ph-capture-attribute-button="screen-main-menu-cardputer-zero" data-ph-capture-attribute-placement="screens" data-full data-caption="Main menu — Every tool in one menu: chat, watch the mesh, explore it, and set up your node."><img src="/assets/screens/cardputer-zero-menu.png" width="960" height="510" loading="lazy" alt="Main menu screenshot"></a><figcaption><span class="screen-title">Main menu</span> Every tool in one menu: chat, watch the mesh, explore it, and set up your node.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/cardputer-zero-chat.png" data-ph-capture-attribute-button="screen-chat-cardputer-zero" data-ph-capture-attribute-placement="screens" data-full data-caption="Chat — Talk on channels, in rooms, and one to one, with every sender in a colour of their own."><img src="/assets/screens/cardputer-zero-chat.png" width="960" height="510" loading="lazy" alt="Chat screenshot"></a><figcaption><span class="screen-title">Chat</span> Talk on channels, in rooms, and one to one, with every sender in a colour of their own.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/cardputer-zero-paths.png" data-ph-capture-attribute-button="screen-message-paths-cardputer-zero" data-ph-capture-attribute-placement="screens" data-full data-caption="Message paths — Visualize every path a message took to reach you."><img src="/assets/screens/cardputer-zero-paths.png" width="960" height="510" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Visualize every path a message took to reach you.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/cardputer-zero-map.png" data-ph-capture-attribute-button="screen-map-cardputer-zero" data-ph-capture-attribute-placement="screens" data-full data-caption="Map — Explore the nodes around you on the map."><img src="/assets/screens/cardputer-zero-map.png" width="960" height="510" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Explore the nodes around you on the map.</figcaption></figure>
+</div>
+<div class="captures" role="tabpanel" id="set-picocalc-lyra" aria-labelledby="set-tab-picocalc-lyra" hidden>
+<figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-menu.png" data-ph-capture-attribute-button="screen-main-menu-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Main menu — Every tool in one menu: chat, watch the mesh, explore it, and set up your node."><img src="/assets/screens/picocalc-lyra-menu.png" width="960" height="960" loading="lazy" alt="Main menu screenshot"></a><figcaption><span class="screen-title">Main menu</span> Every tool in one menu: chat, watch the mesh, explore it, and set up your node.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-chat.png" data-ph-capture-attribute-button="screen-chat-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Chat — Talk on channels, in rooms, and one to one, with every sender in a colour of their own."><img src="/assets/screens/picocalc-lyra-chat.png" width="960" height="960" loading="lazy" alt="Chat screenshot"></a><figcaption><span class="screen-title">Chat</span> Talk on channels, in rooms, and one to one, with every sender in a colour of their own.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-paths.png" data-ph-capture-attribute-button="screen-message-paths-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Message paths — Visualize every path a message took to reach you."><img src="/assets/screens/picocalc-lyra-paths.png" width="960" height="960" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Visualize every path a message took to reach you.</figcaption></figure>
+<figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-map.png" data-ph-capture-attribute-button="screen-map-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Map — Explore the nodes around you on the map."><img src="/assets/screens/picocalc-lyra-map.png" width="960" height="960" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Explore the nodes around you on the map.</figcaption></figure>
+</div>
 </div>
 <div class="devices">
 <figure class="screen device"><a class="hud" href="/assets/screens/picocalc.jpg" data-ph-capture-attribute-button="screen-picocalc" data-ph-capture-attribute-placement="screens" data-full data-caption="PicoCalc — A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in."><img src="/assets/screens/picocalc.jpg" width="900" height="1361" loading="lazy" alt="PicoCalc screenshot"></a><figcaption><span class="screen-title">PicoCalc</span> A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in.</figcaption></figure>
@@ -156,6 +171,31 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
   viewer.addEventListener("click", (event) => {
     if (event.target === viewer) viewer.close();
   });
+})();
+</script><script>
+(() => {
+  const list = document.querySelector(".set-tabs");
+  if (!list) return;
+  const tabs = [...list.querySelectorAll("[role=tab]")];
+  const show = (tab) => {
+    for (const other of tabs) {
+      const on = other === tab;
+      other.setAttribute("aria-selected", on);
+      other.tabIndex = on ? 0 : -1;
+      document.getElementById(other.getAttribute("aria-controls")).hidden = !on;
+    }
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => show(tab));
+    tab.addEventListener("keydown", (event) => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+      if (!step) return;
+      const next = tabs[Math.min(tabs.length - 1, Math.max(0, index + step))];
+      show(next);
+      next.focus();
+    });
+  });
+  list.hidden = false;
 })();
 </script>
 </main>

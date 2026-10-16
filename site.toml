@@ -86,31 +86,48 @@ card = "demo-play.png"
 title = "Watch it"
 caption = "Under two minutes on a real mesh: pairing over Bluetooth, then every route one channel message took to arrive, a trace out and back across the city, a repeater administered over the air, and a packet read out of the live feed."
 
-# The screens on the landing page, in order, taken from MeshTerm's docs/screenshots/ (the
-# files the README shows). A terminal capture keeps its pixels and stays a PNG; one marked
-# `device = true` is a photo of the hardware, which leaves as a JPEG and goes in the column
-# beside the captures. A device entry that is a capture of the handheld's own display, not
-# a photo, adds `capture = true`: it shares that column but keeps its pixels as a PNG.
+# The screens on the landing page, taken from MeshTerm's docs/screenshots/. The captures
+# come in sets: the same screens on the desktop and on each handheld, one tab each, and the
+# page opens on the first set. Each set is a folder of docs/screenshots/, which MeshTerm's
+# scripts/screenshots.py writes from its demo mesh, and every capture below has one image
+# in each folder. A capture keeps its pixels and stays a PNG.
+#
+# An entry marked `device = true` is a photo of the hardware: it leaves as a JPEG and
+# goes in the column beside the captures, outside the sets. A device entry that is a
+# capture of the handheld's own display, not a photo, adds `capture = true`: it shares
+# that column but keeps its pixels as a PNG.
+
+[[screen_set]]
+dir = "terminal"
+label = "Terminal"
+
+[[screen_set]]
+dir = "cardputer-zero"
+label = "Cardputer Zero"
+
+[[screen_set]]
+dir = "picocalc-lyra"
+label = "PicoCalc"
 
 [[screen]]
-file = "dashboard.png"
-title = "Dashboard"
-caption = "See how busy the mesh is, minute by minute."
+file = "menu.png"
+title = "Main menu"
+caption = "Every tool in one menu: chat, watch the mesh, explore it, and set up your node."
+
+[[screen]]
+file = "chat.png"
+title = "Chat"
+caption = "Talk on channels, in rooms, and one to one, with every sender in a colour of their own."
+
+[[screen]]
+file = "paths.png"
+title = "Message paths"
+caption = "Visualize every path a message took to reach you."
 
 [[screen]]
 file = "map.png"
 title = "Map"
 caption = "Explore the nodes around you on the map."
-
-[[screen]]
-file = "trace.png"
-title = "Trace"
-caption = "Trace a route hop by hop and see the signal strength at every step."
-
-[[screen]]
-file = "path.png"
-title = "Message paths"
-caption = "Visualize every path a message took to reach you."
 
 [[screen]]
 file = "picocalc.png"
