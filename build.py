@@ -6,11 +6,13 @@ never edited by hand. It is made from three sources:
 
 - ``site.toml``, the links and the screens: the landing page's buttons, the donation
   buttons, socials, and which of MeshTerm's ``docs/screenshots`` the landing page shows.
-- ``src/``, the look: the stylesheet and the two pieces of art, logo and splash.
+- ``src/``, the look: the stylesheet and the logo.
 - the MeshTerm checkout beside this repo, the words. ``meshterm/assets/pages/*.md`` are
   the very pages the app draws under *About MeshTerm*, so the site cannot say something
   the app doesn't, and their ``{version}`` / ``{author}`` / ``{copyright}`` placeholders
-  are filled from ``meshterm/__init__.py`` exactly as the app fills them.
+  are filled from ``meshterm/__init__.py`` exactly as the app fills them. The splash
+  is the app's own wordmark, both widths of it, as MeshTerm's ``scripts/screenshots.py``
+  draws them into ``docs/screenshots/splash/``, so the site's art is the art the app shows.
 
 The pages were written for a console, and two of their conventions are translated for
 the web rather than rewritten: an address spelled out in emphasis (``*https://…*``)
@@ -59,10 +61,12 @@ PAGES = (
     ("support", "support", "Support MeshTerm", "Support"),
 )
 
-#: The splash art's drawing inside its 700×700 export: 640×250, one image pixel per art
-#: pixel, on a black field. Cropped so the page decides the margins, and only ever scaled
-#: by whole multiples so its pixels stay square.
-SPLASH_BOX = (30, 225, 670, 475)
+#: The splash: the app's wordmarks in MeshTerm's ``docs/screenshots/splash/``, one image
+#: pixel per pixel of the font, on a black field. The wide one is the page's, and the narrow
+#: one a phone's. The page only ever scales them by whole multiples, so the pixels stay
+#: square.
+SPLASH_WIDE = "logo.71.png"
+SPLASH_NARROW = "logo.53.png"
 
 #: The parser, configured as the app's: CommonMark plus tables and strikethrough, the
 #: typographer off so the text comes out exactly as written. Raw HTML stays off too.
@@ -253,20 +257,28 @@ def teaser(source: str) -> str:
 # -- the art ---------------------------------------------------------------------------
 
 
-def build_art() -> None:
-    """Derive every image the site serves from the two originals in ``src/``."""
+def build_art(splashes: Path) -> None:
+    """Derive every image the site serves from the logo in ``src/`` and the app's wordmarks.
+
+    Args:
+        splashes: MeshTerm's ``docs/screenshots/splash/``.
+    """
     assets = OUT / "assets"
     assets.mkdir(parents=True)
 
-    splash = Image.open(SRC / "splash.png").convert("RGB").crop(SPLASH_BOX)
+    for name in (SPLASH_WIDE, SPLASH_NARROW):
+        if not (splashes / name).is_file():
+            raise SystemExit(f"build.py: MeshTerm has no wordmark {splashes / name}")
+    splash = Image.open(splashes / SPLASH_WIDE).convert("RGB")
     splash.save(assets / "splash.png", optimize=True)
+    Image.open(splashes / SPLASH_NARROW).convert("RGB").save(assets / "splash-narrow.png", optimize=True)
 
-    # The link previews: the art doubled pixel-for-pixel, then eased down onto a card and
-    # centred, which leaves the black field above and below as the margin.
-    doubled = splash.resize((splash.width * 2, splash.height * 2), Image.NEAREST)
+    # The link previews: the art blown up pixel-for-pixel past the card's width, then eased
+    # down onto it and centred, which leaves the black field above and below as the margin.
+    tripled = splash.resize((splash.width * 3, splash.height * 3), Image.NEAREST)
 
     def card(size: tuple[int, int], art_width: int, name: str) -> None:
-        fitted = doubled.resize((art_width, art_width * splash.height // splash.width), Image.LANCZOS)
+        fitted = tripled.resize((art_width, art_width * splash.height // splash.width), Image.LANCZOS)
         out = Image.new("RGB", size)
         out.paste(fitted, ((size[0] - fitted.width) // 2, (size[1] - fitted.height) // 2))
         out.save(assets / name, optimize=True)
@@ -762,13 +774,20 @@ def landing(
     demo: dict | None,
 ) -> str:
     """The front page: the splash, the one-liner, the buttons, the screens, the pages, the tip jar."""
+    with Image.open(OUT / "assets" / "splash.png") as image:
+        wide = image.size
+    with Image.open(OUT / "assets" / "splash-narrow.png") as image:
+        narrow = image.size
     captures = _captures(site.get("screen_set", []), [s for s in screens if not s.get("device")])
     devices = "\n".join(_screen(s) for s in screens if s.get("device"))
+    # The device column is there only when site.toml lists a device; without one, the
+    # captures take the gallery's whole width.
+    column = f'<div class="devices">\n{devices}\n</div>\n' if devices else ""
     gallery = (
         '<section class="block wide" aria-labelledby="screens">\n'
         '<h2 class="rule" id="screens">Screens</h2>\n'
-        f'<div class="screens">\n{captures}\n'
-        f'<div class="devices">\n{devices}\n</div>\n</div>\n'
+        f'<div class="screens{"" if devices else " solo"}">\n{captures}\n'
+        f"{column}</div>\n"
         "</section>\n"
         if screens
         else ""
@@ -785,7 +804,7 @@ def landing(
     )
     return f"""<section class="hero">
 <h1 class="visually-hidden">MeshTerm</h1>
-<div class="splash hud"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
+<div class="splash hud"><picture><source media="(max-width: 699px)" srcset="/assets/splash-narrow.png" width="{narrow[0]}" height="{narrow[1]}"><img src="/assets/splash.png" width="{wide[0]}" height="{wide[1]}" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></picture></div>
 <div class="intro">
 <p class="tagline"><span class="prompt" aria-hidden="true">&gt;</span>{esc(site["site"]["description"])}<span class="cursor" aria-hidden="true"></span></p>
 <p class="meta"><span>v{esc(facts["{version}"])}</span><span>Apache-2.0</span></p>
@@ -842,7 +861,7 @@ def main(argv: list[str] | None = None) -> int:
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir()
-    build_art()
+    build_art(checkout / "docs" / "screenshots" / "splash")
     screens = build_screens(
         site.get("screen", []), checkout / "docs" / "screenshots", site.get("screen_set")
     )

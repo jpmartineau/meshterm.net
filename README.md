@@ -8,9 +8,9 @@ Pages from `docs/`.
 | Source | What it holds |
 |---|---|
 | `site.toml` | the links — the landing page's buttons, the donation buttons, socials |
-| `src/` | the look — `style.css`, and the logo and splash art every image is derived from |
+| `src/` | the look — `style.css`, and the logo the icons are derived from |
 | `../MeshTerm/meshterm/assets/pages/` | the words — `about.md`, `author.md` and `support.md`, the same files the app draws, plus the version and copyright line from `meshterm/__init__.py` |
-| `../MeshTerm/docs/screenshots/` | the screens — one folder per set (`terminal/`, `cardputer-zero/`, `picocalc-lyra/`) that MeshTerm's `scripts/screenshots.py` writes from its demo mesh, plus the PicoCalc photo and the Cardputer Zero's display, whichever `site.toml` lists |
+| `../MeshTerm/docs/screenshots/` | the screens — one folder per set (`terminal/`, `cardputer-zero/`, `picocalc-lyra/`) that MeshTerm's `scripts/screenshots.py` writes from its demo mesh, plus `splash/`, the app's two wordmarks, which are the splash and the link previews |
 
 ## Rebuild
 

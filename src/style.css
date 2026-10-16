@@ -226,17 +226,22 @@ a:hover {
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 2px);
 }
 
-/* Whole multiples only, so every art pixel stays a square block. */
-@media (min-width: 700px) {
+/* Whole multiples only, so every art pixel stays a square block: the wide wordmark at
+   twice its size, or three times on a big screen. A phone gets the narrow wordmark, at the
+   width of the page. */
+.splash img {
+  image-rendering: pixelated;
+}
+
+@media (min-width: 900px) {
   .splash img {
-    width: 640px;
-    image-rendering: pixelated;
+    width: 852px;
   }
 }
 
 @media (min-width: 1360px) and (min-height: 900px) {
   .splash img {
-    width: 1280px;
+    width: 1278px;
   }
 }
 
@@ -570,6 +575,10 @@ a:hover {
   .screens {
     grid-template-columns: 2fr 1fr;
     align-items: start;
+  }
+
+  .screens.solo {
+    grid-template-columns: 1fr;
   }
 }
 

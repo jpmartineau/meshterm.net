@@ -129,19 +129,6 @@ file = "map.png"
 title = "Map"
 caption = "Explore the nodes around you on the map."
 
-[[screen]]
-file = "picocalc.png"
-title = "PicoCalc"
-caption = "A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in."
-device = true
-
-[[screen]]
-file = "cardputer-zero.png"
-title = "Cardputer Zero"
-caption = "Straight from M5Stack's app store, on the Cardputer Zero or the Zero Lite. Add the Cap LoRa-1262 and MeshTerm is the node."
-device = true
-capture = true
-
 # Socials land in the top bar and the footer, marked rel="me" so a profile that checks
 # for a link back (Mastodon, Bluesky) can verify the site. None yet — uncomment to add:
 #

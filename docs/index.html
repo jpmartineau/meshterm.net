@@ -83,7 +83,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <main id="main">
 <section class="hero">
 <h1 class="visually-hidden">MeshTerm</h1>
-<div class="splash hud"><img src="/assets/splash.png" width="640" height="250" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></div>
+<div class="splash hud"><picture><source media="(max-width: 699px)" srcset="/assets/splash-narrow.png" width="318" height="192"><img src="/assets/splash.png" width="426" height="192" alt="MeshTerm, in ANSI art: a red sun setting behind a city skyline, over the wordmark"></picture></div>
 <div class="intro">
 <p class="tagline"><span class="prompt" aria-hidden="true">&gt;</span>MeshTerm is a full-featured TUI MeshCore client for your terminal. Connect your device over USB, Bluetooth, or TCP. For Windows, macOS, and Linux. Free and open-source.<span class="cursor" aria-hidden="true"></span></p>
 <p class="meta"><span>v0.11.1</span><span>Apache-2.0</span></p>
@@ -105,7 +105,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 </section>
 <section class="block wide" aria-labelledby="screens">
 <h2 class="rule" id="screens">Screens</h2>
-<div class="screens">
+<div class="screens solo">
 <div class="screen-sets">
 <div class="set-tabs" role="tablist" aria-label="Show the screens on" hidden><button type="button" role="tab" id="set-tab-terminal" aria-controls="set-terminal" aria-selected="true" tabindex="0" data-ph-capture-attribute-button="screens-terminal" data-ph-capture-attribute-placement="screens">Terminal</button><button type="button" role="tab" id="set-tab-cardputer-zero" aria-controls="set-cardputer-zero" aria-selected="false" tabindex="-1" data-ph-capture-attribute-button="screens-cardputer-zero" data-ph-capture-attribute-placement="screens">Cardputer Zero</button><button type="button" role="tab" id="set-tab-picocalc-lyra" aria-controls="set-picocalc-lyra" aria-selected="false" tabindex="-1" data-ph-capture-attribute-button="screens-picocalc-lyra" data-ph-capture-attribute-placement="screens">PicoCalc</button></div>
 <div class="captures" role="tabpanel" id="set-terminal" aria-labelledby="set-tab-terminal">
@@ -126,10 +126,6 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-paths.png" data-ph-capture-attribute-button="screen-message-paths-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Message paths — Visualize every path a message took to reach you."><img src="/assets/screens/picocalc-lyra-paths.png" width="960" height="960" loading="lazy" alt="Message paths screenshot"></a><figcaption><span class="screen-title">Message paths</span> Visualize every path a message took to reach you.</figcaption></figure>
 <figure class="screen"><a class="hud" href="/assets/screens/picocalc-lyra-map.png" data-ph-capture-attribute-button="screen-map-picocalc-lyra" data-ph-capture-attribute-placement="screens" data-full data-caption="Map — Explore the nodes around you on the map."><img src="/assets/screens/picocalc-lyra-map.png" width="960" height="960" loading="lazy" alt="Map screenshot"></a><figcaption><span class="screen-title">Map</span> Explore the nodes around you on the map.</figcaption></figure>
 </div>
-</div>
-<div class="devices">
-<figure class="screen device"><a class="hud" href="/assets/screens/picocalc.jpg" data-ph-capture-attribute-button="screen-picocalc" data-ph-capture-attribute-placement="screens" data-full data-caption="PicoCalc — A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in."><img src="/assets/screens/picocalc.jpg" width="900" height="1361" loading="lazy" alt="PicoCalc screenshot"></a><figcaption><span class="screen-title">PicoCalc</span> A DIY mesh terminal. MeshTerm running on a PicoCalc with a radio wired in.</figcaption></figure>
-<figure class="screen device"><a class="hud" href="/assets/screens/cardputer-zero.png" data-ph-capture-attribute-button="screen-cardputer-zero" data-ph-capture-attribute-placement="screens" data-full data-caption="Cardputer Zero — Straight from M5Stack&#x27;s app store, on the Cardputer Zero or the Zero Lite. Add the Cap LoRa-1262 and MeshTerm is the node."><img src="/assets/screens/cardputer-zero.png" width="960" height="510" loading="lazy" alt="Cardputer Zero screenshot"></a><figcaption><span class="screen-title">Cardputer Zero</span> Straight from M5Stack&#x27;s app store, on the Cardputer Zero or the Zero Lite. Add the Cap LoRa-1262 and MeshTerm is the node.</figcaption></figure>
 </div>
 </div>
 </section>
