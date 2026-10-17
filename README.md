@@ -54,32 +54,40 @@ url = "https://mastodon.social/@example"
 
 ## The demo recording
 
-`[demo]` in `site.toml` points at two files in `src/`, and `build.py` copies both into
-`docs/assets/` untouched. It never re-encodes: the mp4 is already H.264 High in
-`yuv420p` with its `moov` box ahead of the media, which is what lets a browser start
-playing before the whole file has arrived. Re-encoding would cost quality and put ffmpeg
-in the release build's way for nothing.
-
-The poster is a still lifted from the video, so the page shows the real thing before
-anyone presses play, and the video is loaded with `preload="none"` so it costs a visitor
-nothing until they ask for it. The frame never draws wider than the capture's own pixel
-width, because a terminal recording is text at one image pixel per screen pixel and
-scaling it up is exactly what turns that text to mush.
-
-To replace it, drop a new `demo.mp4` and `demo-poster.png` into `src/` and rebuild. To
-cut a fresh poster from a new recording:
+`[demo]` in `site.toml` points at three files in `src/`: the video, its poster, and a
+play card. MeshTerm's `scripts/video.py` makes all three from its demo mesh
+(`meshterm --demo`), the same world the screens come from, and writes them straight into
+this `src/` when the two checkouts sit side by side. It runs a scripted tour of the app
+headless, records the screen 30 times a second, paints each screen the way the terminal
+screenshots are painted, and encodes with ffmpeg. To make a new recording:
 
 ```bash
-ffmpeg -ss 30 -i src/demo.mp4 -frames:v 1 src/demo-poster.png
+cd ../MeshTerm
+.venv/Scripts/python scripts/video.py   # about four minutes
+cd ../meshterm.net
+../MeshTerm/.venv/Scripts/python build.py
 ```
+
+`build.py` copies the three files into `docs/assets/` untouched. It never re-encodes: the
+mp4 is already H.264 High in `yuv420p` with its `moov` box ahead of the media, which is
+what lets a browser start playing before the whole file has arrived. Re-encoding would
+cost quality and put ffmpeg in the release build's way for nothing.
+
+The poster is a frame of the video itself (the paths one message took), so the page shows
+the real thing before anyone presses play, and the video is loaded with `preload="none"`
+so it costs a visitor nothing until they ask for it. The frame never draws wider than the
+video's own pixel width, because scaling a terminal recording up is exactly what turns
+its text to mush. The card is the poster with a play mark and the running time on it;
+the page never shows it.
 
 **The README on [MeshTerm](https://github.com/jpmartineau/MeshTerm) plays a separate
 upload of the same file.** GitHub strips `<video>` out of markdown and will only play a
 file uploaded to GitHub itself, so the recording was dropped into an issue comment box on
 that repo (and the issue never posted) to get a `user-attachments` URL. The README
 carries that URL on a line of its own, which GitHub turns into a player, for logged-out
-visitors too. A new recording means uploading it there again and swapping the URL. The
-copy in `src/` is the one the website plays and the one that is actually ours.
+visitors too. A new recording means uploading `src/demo.mp4` there again and swapping the
+URL, by hand: GitHub has no API for it. The copy in `src/` is the one the website plays
+and the one that is actually ours.
 
 ## The repository's social preview
 

@@ -70,21 +70,22 @@ color = "#ff424d"
 label = "Code signing policy"
 url = "https://github.com/jpmartineau/MeshTerm#code-signing-policy"
 
-# The demo recording, shown under the buttons. Both files live in src/ and are copied
-# out verbatim: the mp4 is already H.264 in yuv420p with its moov box in front, which is
-# what lets a browser start playing it before the whole file has arrived. The poster is a
-# still from the video itself, so the page shows the real thing before anyone presses play.
+# The demo recording, shown under the buttons. MeshTerm's scripts/video.py makes all three
+# files from its demo mesh and writes them into src/, and they are copied out verbatim: the
+# mp4 is already H.264 in yuv420p with its moov box in front, which is what lets a browser
+# start playing it before the whole file has arrived. The poster is a frame of the video
+# itself, so the page shows the real thing before anyone presses play.
 
 [demo]
 file = "demo.mp4"
 poster = "demo-poster.png"
 # The same frame with a play mark and the running time burned in. The page never
-# shows it: it is what MeshTerm's README links, because GitHub will not play an mp4
-# that is not one of its own attachments, so there the demo has to be a picture that
-# announces itself as one.
+# shows it: it is for a page that cannot play the video and has to link to it instead,
+# as MeshTerm's README once did, so there the demo is a picture that announces itself
+# as one.
 card = "demo-play.png"
 title = "Watch it"
-caption = "Under two minutes on a real mesh: pairing over Bluetooth, then every route one channel message took to arrive, a trace out and back across the city, a repeater administered over the air, and a packet read out of the live feed."
+caption = "Under two minutes in the demo mesh over Montréal: every path one channel message took to arrive, a reply to a message as it comes in, a trace across the river and back, the map, a repeater administered over the air, and a packet read out of the live feed."
 
 # The screens on the landing page, taken from MeshTerm's docs/screenshots/. The captures
 # come in sets: the same screens on the desktop and on each handheld, one tab each, and the

@@ -509,9 +509,11 @@ a:hover {
 
 /* -- demo --------------------------------------------------------------------------- */
 
-/* The recording is a terminal capture, one image pixel per screen pixel, so scaling it
-   up is exactly what turns its text to mush. The frame stops at the video's own width
-   and the page keeps the rest as margin. */
+/* The recording is a terminal capture drawn at twice the terminal's size, like the
+   screens (MeshTerm's scripts/video.py: 80 columns in 1476 pixels). At half that width it
+   is one video pixel per device pixel on a HiDPI screen and a clean halving on any other;
+   any wider only scales it up, which is exactly what turns its text to mush. The frame
+   stops there and the page keeps the rest as margin. */
 .demo {
   margin: 0;
   display: grid;
@@ -521,7 +523,7 @@ a:hover {
 
 .demo .hud {
   width: 100%;
-  max-width: calc(840px + 2 * 8px); /* the capture, plus the frame's own padding */
+  max-width: calc(738px + 2 * 8px); /* half the capture, plus the frame's own padding */
 }
 
 .demo video {
