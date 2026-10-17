@@ -84,12 +84,12 @@ the page never shows it.
 
 **The README on [MeshTerm](https://github.com/jpmartineau/MeshTerm) plays a separate
 upload of the same file.** GitHub strips `<video>` out of markdown and will only play a
-file uploaded to GitHub itself, so the recording was dropped into an issue comment box on
-that repo (and the issue never posted) to get a `user-attachments` URL. The README
-carries that URL on a line of its own, which GitHub turns into a player, for logged-out
-visitors too. A new recording means uploading `src/demo.mp4` there again and swapping the
-URL, by hand: GitHub has no API for it. The copy in `src/` is the one the website plays
-and the one that is actually ours.
+file uploaded to GitHub itself, so the README carries a `user-attachments` URL on a line of
+its own, which GitHub turns into a player, for logged-out visitors too. MeshTerm's
+`scripts/video.py --readme` uploads `src/demo.mp4` and swaps that URL, through the same
+(undocumented) endpoint the web page uses when a file is dropped into a comment, with the
+`gh` CLI's token. The copy in `src/` is the one the website plays and the one that is
+actually ours.
 
 ## The repository's social preview
 
