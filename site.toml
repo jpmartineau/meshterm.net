@@ -85,7 +85,7 @@ poster = "demo-poster.png"
 # as one.
 card = "demo-play.png"
 title = "Watch it"
-caption = "Under two minutes in the demo mesh over Montréal: every path one channel message took to arrive, a reply to a message as it comes in, a trace across the river and back, the map, a repeater administered over the air, and a packet read out of the live feed."
+caption = "Under two minutes in the demo mesh over Montréal: every path one channel message took to arrive, a question to a friend and the answer, a trace across the river and back, the map down to the street, a repeater administered over the air, and a packet read out of the live feed."
 
 # The screens on the landing page, taken from MeshTerm's docs/screenshots/. The captures
 # come in sets: the same screens on the desktop and on each handheld, one tab each, and the
