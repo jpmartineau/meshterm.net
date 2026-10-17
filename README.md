@@ -59,7 +59,9 @@ play card. MeshTerm's `scripts/video.py` makes all three from its demo mesh
 (`meshterm --demo`), the same world the screens come from, and writes them straight into
 this `src/` when the two checkouts sit side by side. It runs a scripted tour of the app
 headless, records the screen 30 times a second, paints each screen the way the terminal
-screenshots are painted, and encodes with ffmpeg. To make a new recording:
+screenshots are painted, and encodes with ffmpeg. Every MeshTerm release makes it again,
+right after the screenshots, and pushes it here before the tag, so the release's `website`
+job builds the page with it. To make a new recording between releases:
 
 ```bash
 cd ../MeshTerm
