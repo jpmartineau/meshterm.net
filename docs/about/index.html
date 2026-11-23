@@ -43,7 +43,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 </header>
 <main id="main">
 <article class="page">
-<h1 id="meshterm-v0-13-0">MeshTerm <em>v0.13.0</em></h1>
+<h1 id="meshterm-v1-0-0">MeshTerm <em>v1.0.0</em></h1>
 <p class="standfirst"><strong>MeshTerm</strong> for <strong>MeshCore</strong>.</p>
 <h2 id="what-it-is">What it is</h2>
 <p><strong>MeshTerm</strong> is a full-featured TUI <strong>MeshCore</strong> client for your terminal. Plug in a companion device over USB, pair one over Bluetooth, or reach one over TCP. Windows, macOS, and Linux. Free and open-source.</p>
@@ -74,7 +74,7 @@ posthog.init("phc_tWNACwAassEExnLRUTnT9empuH7v7WGSg9go5oXckX2D",{api_host:"https
 <h3 id="m5stack-cardputer-zero">M5Stack Cardputer Zero</h3>
 <p>The <strong>Cardputer Zero</strong> is the easiest of the three: MeshTerm is in <strong>M5Stack</strong>'s app store, so installing it takes a few keypresses. Both models work, the standard <strong>Cardputer Zero</strong> and the <strong>Cardputer Zero Lite</strong>.</p>
 <ul>
-<li>Add the <strong>Cap LoRa-1262</strong>, and MeshTerm runs the mesh node itself, straight over SPI, just like on the uConsole. The Cap's GPS works too.</li>
+<li>Add a LoRa Cap, and MeshTerm runs the mesh node itself, straight over SPI, just like on the uConsole. Both of M5Stack's Caps work, the <strong>Cap LoRa-1262</strong> and the older <strong>Cap LoRa868</strong>, and MeshTerm works out which one you have. The Cap's GPS works too.</li>
 <li>Power the Cardputer off before you plug in or remove a Cap — the LoRa one included. M5Stack doesn't support hot-swapping Caps, and says it may cause the device to malfunction.</li>
 <li>Put the antenna on the Cap before you power it on. M5Stack warns that the radio can be permanently damaged without it.</li>
 </ul>
@@ -96,6 +96,8 @@ itself, isn't affiliated with MeshTerm.</p>
 <p>Built on <a href="https://meshcore.io/"><strong>MeshCore</strong></a> — its firmware and companion
 library — with Rich, prompt_toolkit, Typer, bleak, pyserial, pycryptodome,
 markdown-it-py, tomli/tomli-w, and Segno, each under its own terms.</p>
+<p>The notification sounds come from the <strong>Android Open Source Project</strong>
+<a href="https://source.android.com/">source.android.com</a>, under the same Apache License as MeshTerm.</p>
 <p>Map data <strong>© OpenStreetMap contributors</strong>, served as vector tiles by
 <a href="https://openfreemap.org/"><strong>OpenFreeMap</strong></a> on the <strong>© OpenMapTiles</strong> schema
 <a href="https://openmaptiles.org/">openmaptiles.org</a>, used under the <strong>ODbL</strong>
